@@ -22,6 +22,10 @@ class Main {
   initializeApp() {
     const app = Express();
 
+    app.get('/', (_,res) => {
+      return res.send('Million-bot online!')
+    })
+
     app.listen(this.PORT, () => {
       console.log('App is listening on port:', this.PORT);
       

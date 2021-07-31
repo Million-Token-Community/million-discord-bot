@@ -12,7 +12,7 @@ export class Announcements {
     new RecurringShills(
       this.client, 
       process.env.SHILL_CHANNEL_ID,  
-      10 * 1000, 
+      17 * 60 * 1000, 
       shillMessages
     );
   }

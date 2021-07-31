@@ -1,1 +1,1 @@
-web: npm run pre-deploy && npm start
+web: npm build && npm start

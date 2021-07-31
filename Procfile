@@ -1,1 +1,1 @@
-worker: npm run clean && npm run build && npm start
+web: npm run pre-deploy && npm start

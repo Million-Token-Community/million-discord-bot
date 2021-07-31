@@ -12,3 +12,13 @@ export function formatLargeNumber(number: number) {
 export function formatPercentageChange(number: number) {
   return `${(number > 0 ? '+' : '')}${(number * 100).toFixed(2)}`;
 }
+
+export function randomInt(min: number, max?: number): number {
+  if (!max) {
+    max = min;
+    min = 0;
+  }
+
+  const num = Math.floor(Math.random() * (max - min + 1) + min);
+  return num
+}

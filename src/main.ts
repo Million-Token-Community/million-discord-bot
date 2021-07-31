@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import { MessageHandlerManager } from './handlers/MessageHandlerManager';
 import { SuggestionsBox } from './handlers/SuggestionsBox';
 import * as Express from 'express';
+import {Announcements} from './Announcements/Announcements';
 
 class Main {
   private creator: SlashCreator;
@@ -14,8 +15,6 @@ class Main {
 
   constructor() {
     dotenv.config();
-    this.initializeBot();
-    this.initializeListeners();
     this.initializeApp();
   }
 
@@ -26,9 +25,11 @@ class Main {
       return res.send('Million-bot online!')
     })
 
-    app.listen(this.PORT, () => {
+    app.listen(this.PORT, async () => {
       console.log('App is listening on port:', this.PORT);
-      
+
+      await this.initializeBot();
+      this.initializeAnnouncememts();
     });
   }
 
@@ -36,10 +37,9 @@ class Main {
     this.client.on('ready', () => console.log('Bot started successfully.'));
     this.creator.on('debug', (message) => console.log(message));
     this.client.on("message", (msg) => {this.messageHandlerManager.handle(msg)})
-
   }
 
-  initializeBot() {
+  async initializeBot() {
     console.log('Starting...');
     this.client = new Client();
     this.creator = new SlashCreator({
@@ -47,7 +47,10 @@ class Main {
       publicKey: process.env.PUBLIC_KEY,
       token: process.env.TOKEN,
     });
-    console.log(path.join(__dirname, 'commands'));
+
+    console.log('Initializing listeners...');
+    this.initializeListeners();
+    
     this.creator
       .withServer(
         new GatewayServer(
@@ -62,7 +65,11 @@ class Main {
       this.messageHandlerManager = new MessageHandlerManager() 
       .add(new SuggestionsBox())
 
-    this.client.login(process.env.TOKEN);
+    await this.client.login(process.env.TOKEN);
+  }
+
+  initializeAnnouncememts() {
+    new Announcements(this.client);
   }
 }
 

@@ -11,7 +11,7 @@ export const shillMessages = [
   `What do you think Google has to say about Million Token :lion:?\n\n` +
   `:point_right:  https://www.google.com/search?q=www.milliontoken.org`,
 
-  `Are you bored? Checkk out Million Token content on YouTube :tv:!\n\n` + 
+  `Are you bored? Check out Million Token content on YouTube :tv:!\n\n` + 
   `:arrow_right:  https://www.youtube.com/results?search_query=million+token`,
 
   `Want to check out the price charts and do some technical analysis for Million Token? Checkout Defined.fi's awesome charts :chart_with_upwards_trend:!\n` +

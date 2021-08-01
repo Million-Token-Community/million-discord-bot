@@ -12,6 +12,8 @@ export class RecurringShills extends RecurringAnnouncement {
   }
 
   async action(): Promise<void> {
+    console.log('sending message');
+
     try {
       const channel = await this.client.channels.fetch(this.channelId) as TextChannel;
     

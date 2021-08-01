@@ -9,10 +9,13 @@ export class RecurringAnnouncement {
     protected minutes: number, 
     protected message: string,
   ) {
+    this.action();
     this.timer = setInterval(this.action.bind(this), this.minutes * 60 * 1000);
   }
 
   async action(): Promise<void> {
+    console.log('sending message');
+    
     try {
       const channel = await this.client.channels.fetch(this.channelId) as TextChannel;
     
@@ -23,7 +26,10 @@ export class RecurringAnnouncement {
       await channel.send(this.message);
     } catch (error) {
       console.log('Error creating announcement:', error);
-      clearInterval(this.timer);
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
+      
     }
   }
 }

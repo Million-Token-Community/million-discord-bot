@@ -1,9 +1,9 @@
 export const shillMessages = [ 
-  `Checkout the cool charts :chart_with_upwards_trend: at DEX Tools:\n` +
+  `:chart_with_upwards_trend: Checkout the cool charts at DEX Tools:\n` +
   'https://www.tinyurl.com/milliondextoolschart \n\n' +
   `Don't forget to add to favorites :star:!`,
 
-  `CoinGecko :lizard: probably can't save you money on car insurance, ` +
+  `:lizard: CoinGecko probably can't save you money on car insurance, ` +
   `but they have some cool price charts :chart_with_upwards_trend:!\n` +
   ' https://www.coingecko.com/en/coins/million \n\n' +
   `And hit that star :star:!`,
@@ -14,7 +14,7 @@ export const shillMessages = [
   `Are you bored? Checkkout Million Token content on YouTube :tv:!\n\n` + 
   `:arrow_right:  https://www.youtube.com/results?search_query=million+token`,
 
-  `Want to check out the price charts and do some TA for $MM? Checkout Defined.fi's awesome charts!\n` +
+  `Want to check out the price charts and do some TA for $MM? Checkout Defined.fi's awesome charts :chart_with_upwards_trend:!\n` +
   `https://www.tinyurl.com/milliondefinedchart\n\n` +
   `Give it a like :heart: to help boost $MM's ranking!`,
 

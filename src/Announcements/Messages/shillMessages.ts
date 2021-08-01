@@ -21,4 +21,8 @@ export const shillMessages = [
   `Checkout Million Token content on Twitter!\n` +
   `https://twitter.com/hashtag/MillionToken\n\n` +
   `:bird:  Remember to like, retweet, and comment!`,
+
+  `:moneybag:  Looking to buy some :mm: $MM?  :moneybag:` +
+  `:point_right:  Buy from Uniswap <https://app.uniswap.org/#/swap?outputCurrency=0x6b4c7a5e3f0b99fcd83e9c089bddd6c7fce5c611>\n` +
+  `:point_right:  Buy from PancakeSwap <https://exchange.pancakeswap.finance/#/swap?outputCurrency=0xbf05279f9bf1ce69bbfed670813b7e431142afa4>\n`
 ];

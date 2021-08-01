@@ -6,10 +6,10 @@ export class RecurringAnnouncement {
   constructor(
     protected client: Client,
     protected channelId: string,
-    protected interval: number, 
+    protected minutes: number, 
     protected message: string,
   ) {
-    this.timer = setInterval(this.action.bind(this), this.interval);
+    this.timer = setInterval(this.action.bind(this), this.minutes * 60 * 1000);
   }
 
   async action(): Promise<void> {

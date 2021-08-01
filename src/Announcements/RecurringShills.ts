@@ -6,9 +6,9 @@ export class RecurringShills extends RecurringAnnouncement {
   constructor(
     client: Client,
     channelId: string,
-    interval: number, 
+    minutes: number, 
     private shills: string[],) {
-    super(client, channelId, interval, '');
+    super(client, channelId, minutes, '');
   }
 
   async action(): Promise<void> {

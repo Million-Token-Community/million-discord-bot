@@ -29,5 +29,5 @@ export const shillMessages = [
   `<https://exchange.pancakeswap.finance/#/swap?outputCurrency=0xbf05279f9bf1ce69bbfed670813b7e431142afa4>`,
 
   `:thinking:  Is Million Token legit or just another meme coin?  :thinking:\n\n` +
-  `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n` +
+  `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n` 
 ];

@@ -16,7 +16,7 @@ export const shillMessages = [
 
   `Want to check out the price charts and do some TA for $MM? Checkout Defined.fi's awesome charts :chart_with_upwards_trend:!\n` +
   `https://www.tinyurl.com/milliondefinedchart\n\n` +
-  `Give it a like :heart: to help boost $MM's ranking!`,
+  `:heart:  Give it a like to help boost $MM's ranking!`,
 
   `Checkout Million Token content on Twitter!\n` +
   `https://twitter.com/hashtag/MillionToken\n\n` +

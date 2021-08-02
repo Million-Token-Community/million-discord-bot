@@ -29,7 +29,7 @@ class Main {
       console.log('App is listening on port:', this.PORT);
 
       await this.initializeBot();
-      this.initializeAnnouncememts();
+      // this.initializeAnnouncememts();
     });
   }
 

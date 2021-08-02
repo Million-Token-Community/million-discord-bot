@@ -12,7 +12,6 @@ export class SuggestionsBox implements IMessageHandler {
 
         try
         {
-            console.log(message.channel.id, this.channel_id)
             if (message.channel.id == this.channel_id) 
             {
                 message.react('✅')

@@ -4,7 +4,7 @@ import {channelIds} from '../channel-IDs'
 
 export class SuggestionsBox implements IMessageHandler {
     
-    private channel_id = channelIds.suggestion_box;
+    private channel_id = '870438625219842090';
 
 
     handle(message: Message): void 

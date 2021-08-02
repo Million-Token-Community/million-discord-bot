@@ -1,9 +1,10 @@
 import { Message } from "discord.js";
 import { IMessageHandler } from "./IMessageHandler";
+import {channelIds} from '../channel-IDs'
 
 export class SuggestionsBox implements IMessageHandler {
     
-    private channel_id = '870438625219842090'
+    private channel_id = channelIds.suggestion_box;
 
 
     handle(message: Message): void 
@@ -11,6 +12,7 @@ export class SuggestionsBox implements IMessageHandler {
 
         try
         {
+            console.log(message.channel.id, this.channel_id)
             if (message.channel.id == this.channel_id) 
             {
                 message.react('✅')

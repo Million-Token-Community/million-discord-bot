@@ -29,7 +29,7 @@ class Main {
       console.log('App is listening on port:', this.PORT);
 
       await this.initializeBot();
-      // this.initializeAnnouncememts();
+      this.initializeAnnouncememts();
     });
   }
 
@@ -37,6 +37,10 @@ class Main {
     this.client.on('ready', () => console.log('Bot started successfully.'));
     this.creator.on('debug', (message) => console.log(message));
     this.client.on("message", (msg) => {this.messageHandlerManager.handle(msg)})
+    this.client.on('error', (error) => {
+      console.log(error);
+      
+    })
   }
 
   async initializeBot() {

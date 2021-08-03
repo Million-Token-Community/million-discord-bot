@@ -26,7 +26,6 @@ export class RecurringShills extends RecurringAnnouncement {
       await channel.send(message);
     } catch (error) {
       console.log('Error creating announcement:', error);
-      clearInterval(this.timer);
     }
   }
 }

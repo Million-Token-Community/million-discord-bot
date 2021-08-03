@@ -26,9 +26,6 @@ export class RecurringAnnouncement {
       await channel.send(this.message);
     } catch (error) {
       console.log('Error creating announcement:', error);
-      if (this.timer) {
-        clearInterval(this.timer);
-      }
       
     }
   }

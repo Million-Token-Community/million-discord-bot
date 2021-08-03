@@ -1,9 +1,9 @@
 export const shillMessages = [ 
-  `:chart_with_upwards_trend:  Check out the cool charts at <:dextools:872079783046025256> DEX Tools:\n` +
+  `:chart_with_upwards_trend:  Check out the cool charts at DEX Tools:\n` +
   'https://www.tinyurl.com/milliondextoolschart \n\n' +
   `Don't forget to add to favorites :star:!`,
 
-  `<:coingecko:872080019248271380> CoinGecko probably can't save you money on car insurance, ` +
+  `:gecko: CoinGecko probably can't save you money on car insurance, ` +
   `but they have some cool price charts :chart_with_upwards_trend:!\n` +
   ' https://www.coingecko.com/en/coins/million \n\n' +
   `And hit that star :star:!`,
@@ -18,7 +18,7 @@ export const shillMessages = [
   `https://www.tinyurl.com/milliondefinedchart\n\n` +
   `:heart:  Give it a like to help boost $MM's ranking!`,
 
-  `Check out Million Token content on <:twitter:872079078562336819> Twitter!\n` +
+  `Check out Million Token content on Twitter!\n` +
   `https://twitter.com/hashtag/MillionToken\n\n` +
   `:bird:  Remember to like, retweet, and comment!`,
 
@@ -31,7 +31,7 @@ export const shillMessages = [
   `:thinking:  Is Million Token legit?  :thinking:\n\n` +
   `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n`,
   
-  `<:leocheers:872073380097052672> Got a good idea about to how to take us to the moon :full_moon:? \n\n` +
+  `:bulb:  Got a good idea about to how to take us to the moon :full_moon:? \n\n` +
   `Share your ideas here:\n` + 
   `https://mm-daily-ideas.paperform.co/`
 ];

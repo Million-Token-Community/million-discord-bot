@@ -13,7 +13,7 @@ export class Announcements {
     new RecurringShills(
       this.client, 
       channelIds.lounge,  
-      2, 
+      5, 
       shillMessages
     );
   }

@@ -3,7 +3,7 @@ export const shillMessages = [
   'https://www.tinyurl.com/milliondextoolschart \n\n' +
   `Don't forget to add to favorites :star:!`,
 
-  `:gecko: CoinGecko probably can't save you money on car insurance, ` +
+  `:lizard: CoinGecko probably can't save you money on car insurance, ` +
   `but they have some cool price charts :chart_with_upwards_trend:!\n` +
   ' https://www.coingecko.com/en/coins/million \n\n' +
   `And hit that star :star:!`,

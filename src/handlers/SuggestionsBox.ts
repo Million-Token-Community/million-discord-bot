@@ -1,10 +1,10 @@
 import { Message } from "discord.js";
 import { IMessageHandler } from "./IMessageHandler";
-// import {channelIds} from '../channel-IDs'
+import {channelIds} from '../channel-IDs'
 
 export class SuggestionsBox implements IMessageHandler {
     
-    private channel_id = '870438625219842090';
+    private channel_id = channelIds.suggestion_box;
 
 
     handle(message: Message): void 

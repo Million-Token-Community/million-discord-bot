@@ -18,7 +18,7 @@ export const shillMessages = [
   `https://www.tinyurl.com/milliondefinedchart\n\n` +
   `:heart:  Give it a like to help boost $MM's ranking!`,
 
-  `Checkout Million Token content on Twitter!\n` +
+  `Check out Million Token content on Twitter!\n` +
   `https://twitter.com/hashtag/MillionToken\n\n` +
   `:bird:  Remember to like, retweet, and comment!`,
 
@@ -29,5 +29,9 @@ export const shillMessages = [
   `<https://exchange.pancakeswap.finance/#/swap?outputCurrency=0xbf05279f9bf1ce69bbfed670813b7e431142afa4>`,
 
   `:thinking:  Is Million Token legit or just another meme coin?  :thinking:\n\n` +
-  `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n` 
+  `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n`,
+  
+  `<:leocheers:872073380097052672> Got a good idea about to how to take us to the moon :full_moon:? \n\n` +
+  `Share your ideas here:\n` + 
+  `https://mm-daily-ideas.paperform.co/`
 ];

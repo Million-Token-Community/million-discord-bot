@@ -31,7 +31,7 @@ export const shillMessages = [
   `:thinking:  Is Million Token legit?  :thinking:\n\n` +
   `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n`,
   
-  `:bulb:  Got a good idea about to how to take us to the moon :full_moon:? \n\n` +
+  `:bulb:  Got a good idea about how to take us to the moon :full_moon:? \n\n` +
   `Share your ideas here:\n` + 
   `https://mm-daily-ideas.paperform.co/`
 ];

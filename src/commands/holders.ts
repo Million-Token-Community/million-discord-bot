@@ -1,5 +1,5 @@
 import { SlashCommand } from 'slash-create';
-import * as fetch from 'node-fetch';
+import fetch, {Response} from 'node-fetch';
 import { cache } from '../cache';
 
 module.exports = class HelloCommand extends SlashCommand {

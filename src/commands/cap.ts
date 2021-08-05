@@ -1,5 +1,5 @@
-import { SlashCommand } from 'slash-create';
-import * as fetch from 'node-fetch';
+import { SlashCommand, CommandContext } from 'slash-create';
+import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
 import { cache } from '../cache';
 
@@ -15,7 +15,7 @@ module.exports = class HelloCommand extends SlashCommand {
     this.filePath = __filename;
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     const apiUrl =
       'https://api.coingecko.com/api/v3/coins/million?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
     const init = {

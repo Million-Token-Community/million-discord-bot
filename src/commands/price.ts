@@ -1,5 +1,5 @@
-import { SlashCommand } from 'slash-create';
-import * as fetch from 'node-fetch';
+import { CommandContext, SlashCommand } from 'slash-create';
+import fetch from 'node-fetch';
 import { formatPercentageChange } from '../utils';
 import { cache } from '../cache';
 
@@ -15,7 +15,7 @@ module.exports = class HelloCommand extends SlashCommand {
     this.filePath = __filename;
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     console.log(process.env.NOMICS_API_TOKEN);
     const apiUrl = `https://api.nomics.com/v1/currencies/ticker?key=${process.env.NOMICS_API_TOKEN}&ids=MM4`;
     const init = {

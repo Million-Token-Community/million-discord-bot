@@ -4,7 +4,7 @@ import {
   SlashCreator,
   MessageEmbedOptions,
 } from 'slash-create';
-import * as fetch from 'node-fetch';
+import fetch, {Response} from 'node-fetch';
 import { cache } from '../cache';
 
 module.exports = class GasCommand extends SlashCommand {
@@ -34,7 +34,7 @@ module.exports = class GasCommand extends SlashCommand {
       if (await cache.has(cacheKey)) {
         responseBody = (await cache.get(cacheKey)) as EthGasResponseBody;
       } else {
-        const response = await fetch(apiUrl, init);
+        const response: Response = await fetch(apiUrl, init);
         responseBody = await response.json();
         await cache.set(cacheKey, responseBody);
       }

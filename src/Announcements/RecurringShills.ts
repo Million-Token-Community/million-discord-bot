@@ -3,6 +3,8 @@ import {Client, TextChannel} from 'discord.js';
 import {randomInt} from '../utils';
 
 export class RecurringShills extends RecurringAnnouncement {
+  private previousIndex: number |  null = null;
+
   constructor(
     client: Client,
     channelId: string,
@@ -21,7 +23,15 @@ export class RecurringShills extends RecurringAnnouncement {
         throw 'Could not find channel with ID' + this.channelId;
       }
 
-      const message = this.shills[randomInt(this.shills.length - 1)];
+      const maxIndex = this.shills.length - 1;
+      let index = randomInt(maxIndex);
+
+      while (index === this.previousIndex) {
+        index = randomInt(maxIndex)
+      }
+
+      const message = this.shills[index];
+      this.previousIndex = index;
 
       await channel.send(message);
     } catch (error) {

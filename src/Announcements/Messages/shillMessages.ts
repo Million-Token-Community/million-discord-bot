@@ -33,5 +33,9 @@ export const shillMessages = [
   
   `:bulb:  Got a good idea about how to take us to the moon :full_moon:? \n\n` +
   `Share your ideas here:\n` + 
-  `https://mm-daily-ideas.paperform.co/`
+  `https://mm-daily-ideas.paperform.co/`,
+
+  `Did you know there's a reddit for Million Token???\n\n` +
+  `Come see what's going on:\n` +
+  `https://www.reddit.com/r/milliontoken/`
 ];

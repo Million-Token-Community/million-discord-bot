@@ -1,5 +1,5 @@
 export const shillMessages = [ 
-  `:chart_with_upwards_trend:  Check out the cool charts at DEX Tools:\n` +
+  `:chart_with_upwards_trend:  Check out the price charts at DEX Tools:\n` +
   'https://www.tinyurl.com/milliondextoolschart \n\n' +
   `Don't forget to add to favorites :star:!`,
 
@@ -14,7 +14,8 @@ export const shillMessages = [
   `Are you bored? Check out Million Token content on YouTube :tv:!\n\n` + 
   `:arrow_right:  https://www.youtube.com/results?search_query=million+token`,
 
-  `Want to check out the price charts and do some technical analysis for Million Token? Checkout Defined.fi's awesome charts :chart_with_upwards_trend:!\n` +
+  `Want to do some technical analysis on Million Token?\n` + 
+  `Checkout Defined.fi's awesome charts :chart_with_upwards_trend:!\n` +
   `https://www.tinyurl.com/milliondefinedchart\n\n` +
   `:heart:  Give it a like to help boost $MM's ranking!`,
 
@@ -31,7 +32,7 @@ export const shillMessages = [
   `:thinking:  Is Million Token legit?  :thinking:\n\n` +
   `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n`,
   
-  `:bulb:  Got a good idea about how to take us to the moon :full_moon:? \n\n` +
+  `:bulb:  Got a good idea about how to take us to the moon? \n\n` +
   `Share your ideas here:\n` + 
   `https://mm-daily-ideas.paperform.co/`,
 

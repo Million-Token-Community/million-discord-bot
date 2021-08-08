@@ -1,6 +1,5 @@
 import {Client} from 'discord.js';
 import {RecurringShills} from './RecurringShills';
-import {shillMessages} from './Messages/shillMessages';
 import {channelIds} from '../channel-IDs'
 
 export class Announcements {  
@@ -13,8 +12,7 @@ export class Announcements {
     new RecurringShills(
       this.client, 
       channelIds.lounge,  
-      5, 
-      shillMessages
+      5
     );
   }
 }

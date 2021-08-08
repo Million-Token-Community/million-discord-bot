@@ -1,7 +1,8 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { Client, WSEventType } from 'discord.js';
 import {GatewayServer, SlashCreator } from 'slash-create';
 import * as path from 'path';
-import * as dotenv from 'dotenv';
 import { MessageHandlerManager } from './handlers/MessageHandlerManager';
 import { SuggestionsBox } from './handlers/SuggestionsBox';
 import * as Express from 'express';
@@ -14,7 +15,6 @@ class Main {
   private PORT: string | number = process.env.PORT || 3000;
 
   constructor() {
-    dotenv.config();
     this.initializeApp();
   }
 
@@ -29,7 +29,7 @@ class Main {
       console.log('App is listening on port:', this.PORT);
 
       await this.initializeBot();
-      this.initializeAnnouncememts();
+      // this.initializeAnnouncememts();
     });
   }
 

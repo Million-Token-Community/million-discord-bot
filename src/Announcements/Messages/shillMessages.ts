@@ -29,8 +29,9 @@ export const shillMessages = [
   `:point_right:  Buy from PancakeSwap:\n` + 
   `<https://exchange.pancakeswap.finance/#/swap?outputCurrency=0xbf05279f9bf1ce69bbfed670813b7e431142afa4>`,
 
-  `:thinking:  Is Million Token legit?  :thinking:\n\n` +
-  `:eyes:  See for yourself  :point_right:  https://www.certik.org/projects/milliontoken\n`,
+  `:white_check_mark:  Certik has onboarded Million Token!\n\n` +
+  `:arrow_forward:  See here: <https://www.certik.org/projects/milliontoken>\n\n` + 
+  `https://www.certik.org/api/card/milliontoken.jpg?t=1628333500`,
   
   `:bulb:  Got a good idea about how to take us to the moon? \n\n` +
   `Share your ideas here:\n` + 

@@ -17,8 +17,8 @@ export class RecurringShills {
 
   async getShills(): Promise<string[]> {
     const records = await ShillMessageDataService.getAllShillMessages();
-    const messages = records.map(entry => entry.message);
-    await cache.set('shill_messages', messages, 4 * 60 * 60 * 1000);
+    const messages = records.map(entry => entry.content);
+    await cache.set('shill_messages', messages, 0);
     return messages;
   }
 

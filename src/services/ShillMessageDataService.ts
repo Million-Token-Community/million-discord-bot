@@ -1,11 +1,12 @@
 import * as Airtable from 'airtable';
 import {FieldSet} from 'airtable/lib/field_set';
 import {QueryParams} from 'airtable/lib/query_params';
+import Record from 'airtable/lib/record';
 
 export interface ShillMessage {
   id: string;
   name: string;
-  message: string;
+  content: string;
 }
 
 export class ShillMessageDataService {
@@ -27,19 +28,15 @@ export class ShillMessageDataService {
       .all();
 
     records.forEach(record => {
-      items.push({
-        id: record.getId(),
-        name: record.get('name') as string,
-        message: record.get('message') as string
-      });
+      items.push(this.shillMessage(record));
     });
 
     return items;
   }
 
-  static async getShillMessageById(id: string): Promise<unknown> {
+  static async getShillMessageById(id: string): Promise<ShillMessage> {
     const record = await this.table.find(id);
-    return record._rawJson
+    return this.shillMessage(record);
   }
 
   static async getMessageByName(name: string): Promise<unknown> {
@@ -50,25 +47,39 @@ export class ShillMessageDataService {
     return records[0]?._rawJson;
   }
 
-  static async createShillMessage(name: string, message: string): Promise<unknown | undefined> {
+  static async createShillMessage(name: string, content: string): Promise<ShillMessage> {
     const exists = await this.getMessageByName(name);
 
-    if (exists) return undefined;
+    if (exists) throw {
+      title: 'Error creating message',
+      message: `message name "${name}" already being used`
+    };
 
-    const records = await this.table.create([{fields: {
-      name, message
-    }}])
+    const record = await this.table.create({name, content});
 
-    return records[0]?._rawJson;
+    return this.shillMessage(record);
   }
 
-  static async updateShillMessage(id: string, fields: Partial<FieldSet>): Promise<string | undefined> {
+  static async editShillMessage(
+    id: string, 
+    fields: {
+      name?: string, 
+      content?: string
+  }): Promise<ShillMessage> {
     const record = await this.table.update(id, fields)
-    return record?.getId();
+    return this.shillMessage(record);
   }
 
-  static async deleteMessage(id: string): Promise<unknown> {
+  static async deleteMessage(id: string): Promise<ShillMessage> {
     const record = await this.table.destroy(id);
-    return record?._rawJson;
+    return this.shillMessage(record);
+  }
+
+  static shillMessage(record: Record<FieldSet>): ShillMessage {
+    return {
+      id: record.getId(),
+      name: record.get('name') as string,
+      content: record.get('content') as string
+    }
   }
 }

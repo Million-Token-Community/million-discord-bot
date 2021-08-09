@@ -2,7 +2,7 @@
   "name": "million-token-bot",
   "version": "0.0.1",
   "scripts": {
-    "start": "node dist/main.js",
+    "start": "NODE_ENV=production node dist/main.js",
     "pre-deploy": "npm run clean && npm run build",
     "prestart:dev": "npm run clean",
     "start:dev": "npm run clean && tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/main.js\"",

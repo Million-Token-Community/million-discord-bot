@@ -7,10 +7,11 @@ import { MessageHandlerManager } from './handlers/MessageHandlerManager';
 import { SuggestionsBox } from './handlers/SuggestionsBox';
 import * as Express from 'express';
 import {Announcements} from './Announcements/Announcements';
+import {client} from './discordClient';
 
 class Main {
   private creator: SlashCreator;
-  private client: Client;
+  protected client: Client;
   private messageHandlerManager:MessageHandlerManager
   private PORT: string | number = process.env.PORT || 3000;
 
@@ -29,7 +30,7 @@ class Main {
       console.log('App is listening on port:', this.PORT);
 
       await this.initializeBot();
-      // this.initializeAnnouncememts();
+      this.initializeAnnouncememts();
     });
   }
 
@@ -45,7 +46,7 @@ class Main {
 
   async initializeBot() {
     console.log('Starting...');
-    this.client = new Client();
+    this.client = client;
     this.creator = new SlashCreator({
       applicationID: process.env.APPLICATION_ID,
       publicKey: process.env.PUBLIC_KEY,

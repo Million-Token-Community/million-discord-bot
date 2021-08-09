@@ -8,7 +8,7 @@ module.exports = class HelloCommand extends SlashCommand {
     super(creator, {
       name: 'cap',
       description: 'Get current cap (as a millionaire).',
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [process.env.GUILD_ID, process.env.BACKUP_GUILD_ID],
     });
 
     // Not required initially, but required for reloading with a fresh file.

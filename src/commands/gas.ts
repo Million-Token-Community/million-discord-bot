@@ -12,7 +12,7 @@ module.exports = class GasCommand extends SlashCommand {
     super(creator, {
       name: 'gas',
       description: `Gets current gas prices (as a millionaire)`,
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [process.env.GUILD_ID, process.env.BACKUP_GUILD_ID],
     });
 
     // Not required initially, but required for reloading with a fresh file.

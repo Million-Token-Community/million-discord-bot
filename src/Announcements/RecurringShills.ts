@@ -1,43 +1,31 @@
-import {RecurringAnnouncement} from './RecurringAnnouncement';
 import {Client, TextChannel} from 'discord.js';
 import {randomInt} from '../utils';
+import {cache} from '../cache';
+import {ShillMessageDataService} from '../services/ShillMessageDataService';
 
-export class RecurringShills extends RecurringAnnouncement {
+export class RecurringShills {
   private shillOrder: number[] = [];
+  timer: NodeJS.Timeout;
 
   constructor(
-    client: Client,
-    channelId: string,
-    minutes: number, 
-    private shills: string[],) {
-    super(client, channelId, minutes, '');
-    this.randomizeShillOrder();
+    private client: Client,
+    private channelId: string,
+    private minutes: number, 
+    ) {
+    this.start();
   }
 
-  async action(): Promise<void> {
-    console.log('sending message');
-
-    try {
-      const channel = await this.client.channels.fetch(this.channelId) as TextChannel;
-    
-      if (!channel) {
-        throw 'Could not find channel with ID' + this.channelId;
-      }
-      
-      const index = this.shillOrder.pop();
-      await channel.send(this.shills[index]);
-
-      if (this.shillOrder.length === 0) {
-        this.randomizeShillOrder();
-      }
-    } catch (error) {
-      console.log('Error creating announcement:', error);
-    }
+  async getShills(): Promise<string[]> {
+    const records = await ShillMessageDataService.getAllShillMessages();
+    const messages = records.map(entry => entry.content);
+    await cache.set('shill_messages', messages, 0);
+    return messages;
   }
 
-  randomizeShillOrder(): void {
+  async randomizeShillOrder(): Promise<void> {
+    const shills = await this.getShills();
     const freqHash = {};
-    const numShills = this.shills.length;
+    const numShills = shills.length;
 
     while (numShills && this.shillOrder.length < numShills) {
       const index = randomInt(numShills - 1);
@@ -46,6 +34,34 @@ export class RecurringShills extends RecurringAnnouncement {
 
       freqHash[index] = true;
       this.shillOrder.push(index);
+    }
+  }
+
+  async start(): Promise<void> {
+    await this.randomizeShillOrder();
+    await this.action();
+    this.timer = setInterval(this.action.bind(this), this.minutes * 60 * 1000);
+  }
+
+  async action(): Promise<void> {
+    console.log('sending message');
+
+    try {
+      const shills = await cache.get('shill_messages');
+      const channel = await this.client.channels.fetch(this.channelId) as TextChannel;
+    
+      if (!channel) {
+        throw 'Could not find channel with ID' + this.channelId;
+      }
+      
+      const index = this.shillOrder.pop();
+      await channel.send(shills[index]);
+
+      if (this.shillOrder.length === 0) {
+        await this.randomizeShillOrder();
+      }
+    } catch (error) {
+      console.log('Error creating announcement:', error);
     }
   }
 }

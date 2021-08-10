@@ -1,20 +1,21 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { Client, WSEventType } from 'discord.js';
 import {GatewayServer, SlashCreator } from 'slash-create';
 import * as path from 'path';
-import * as dotenv from 'dotenv';
 import { MessageHandlerManager } from './handlers/MessageHandlerManager';
 import { SuggestionsBox } from './handlers/SuggestionsBox';
 import * as Express from 'express';
 import {Announcements} from './Announcements/Announcements';
+import {client} from './discordClient';
 
 class Main {
   private creator: SlashCreator;
-  private client: Client;
+  protected client: Client;
   private messageHandlerManager:MessageHandlerManager
   private PORT: string | number = process.env.PORT || 3000;
 
   constructor() {
-    dotenv.config();
     this.initializeApp();
   }
 
@@ -45,7 +46,7 @@ class Main {
 
   async initializeBot() {
     console.log('Starting...');
-    this.client = new Client();
+    this.client = client;
     this.creator = new SlashCreator({
       applicationID: process.env.APPLICATION_ID,
       publicKey: process.env.PUBLIC_KEY,

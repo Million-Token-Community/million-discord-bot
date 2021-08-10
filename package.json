@@ -17,7 +17,6 @@
     "express": "^4.17.1",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
-    "npm": "^7.20.5",
     "slash-create": "^3.3.0",
     "tslib": "~2.1.0"
   },

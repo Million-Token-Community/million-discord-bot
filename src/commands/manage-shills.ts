@@ -11,11 +11,11 @@ import { Message, TextChannel } from 'discord.js';
 import {commandOptions} from './manage-shills.command-options'
 
 module.exports = class ManageShillsCommands extends SlashCommand {
-  allowedRoles = [          //  only allow Lead Admins, Admins, Lead Dev, and Lead Marketer
-    '872062467621138481', 
-    '872062467621138479', 
-    '872062467621138472', 
-    '872062467612762139'
+  allowedRoles = [          //  only allow Lead Admins, Admins, Lead Dev, and Lead Ambassador
+    '870411279108571216',   // '872062467621138481', 
+    '870429095941517332',   // '872062467621138479', 
+    '870435957969657886',   // '872062467621138472', 
+    '870501520796418059'    // '872062467612762139'
   ];
 
   constructor(creator) {
@@ -128,6 +128,14 @@ module.exports = class ManageShillsCommands extends SlashCommand {
     return output;
   }
 
+  async getChatMessage(id: string): Promise<Message> {
+    const channel = await client
+      .channels
+      .fetch(channelIds.botCommandsChannel) as TextChannel;
+
+    return await channel.messages.fetch(id);
+  }
+
   createError(title: string, message: string) {
     const err: ManageShillsCommandError = {title, message};
 
@@ -162,16 +170,19 @@ module.exports = class ManageShillsCommands extends SlashCommand {
   }
 
   async createMessage(ctx: CommandContext) {
-    const {name, content}: {name: string, content: string} = ctx.options.create;
-    const message = await ShillMessageDataService
-      .createShillMessage(name, content);
+    const {name, message_id}: {name: string, message_id: string} = ctx.options.create;
+    const chatMessage: Message = await this.getChatMessage(message_id);
+
+    const shillMessage = await ShillMessageDataService
+      .createShillMessage(name, chatMessage.content);
 
     const embed = this.createStatusEmbed(
       'New message created',
-      this.formatMessage(message, false)
+      this.formatMessage(shillMessage, false)
     );
-
-    return await ctx.send({embeds: [embed], ephemeral: true});
+    
+    await chatMessage.react('✅');
+    await ctx.send({embeds: [embed], ephemeral: true});
   }
 
   async editMessage(ctx: CommandContext) {
@@ -187,10 +198,10 @@ module.exports = class ManageShillsCommands extends SlashCommand {
 
     const fields = {};
 
+    let chatMessage: Message | null = null;
     if (message_id) {
-      const channel = await client.channels.fetch(ctx.channelID) as TextChannel;
-      const shillMessage = await channel.messages.fetch(message_id) as Message;
-      fields['content'] = shillMessage.content;
+      chatMessage = await this.getChatMessage(message_id);
+      fields['content'] = chatMessage.content;
     }
 
     if (name) {
@@ -205,7 +216,11 @@ module.exports = class ManageShillsCommands extends SlashCommand {
       this.formatMessage(shillMessage, false)
     );
   
-    return ctx.send({embeds: [embed], ephemeral: true});
+    if (chatMessage) {
+      await chatMessage.react('☑️');
+    }
+
+    await ctx.send({embeds: [embed], ephemeral: true});
   }
 
   async deleteMessage(ctx: CommandContext) {

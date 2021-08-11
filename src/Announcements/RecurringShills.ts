@@ -55,7 +55,9 @@ export class RecurringShills {
       }
       
       const index = this.shillOrder.pop();
-      await channel.send(shills[index]);
+      const shillMessage = shills[index];
+
+      if (shillMessage) await channel.send(shillMessage);
 
       if (this.shillOrder.length === 0) {
         await this.randomizeShillOrder();

@@ -6,8 +6,9 @@ import * as path from 'path';
 import { MessageHandlerManager } from './handlers/MessageHandlerManager';
 import { SuggestionsBox } from './handlers/SuggestionsBox';
 import * as Express from 'express';
-import {Announcements} from './Announcements/Announcements';
+import {Announcements} from './tasks/Announcements/Announcements';
 import {client} from './discordClient';
+import {SocialStatusDisplay} from './tasks/SocialStatusDisplay/SocialStatusDisplay';
 
 class Main {
   private creator: SlashCreator;
@@ -30,17 +31,18 @@ class Main {
       console.log('App is listening on port:', this.PORT);
 
       await this.initializeBot();
-      this.initializeAnnouncememts();
     });
   }
 
   initializeListeners() {
-    this.client.on('ready', () => console.log('Bot started successfully.'));
+    this.client.on('ready', () => {
+      console.log('Bot started successfully. Starting tasks...')
+      this.initializeTasks();
+    });
     this.creator.on('debug', (message) => console.log(message));
     this.client.on("message", (msg) => {this.messageHandlerManager.handle(msg)})
     this.client.on('error', (error) => {
       console.log(error);
-      
     })
   }
 
@@ -73,8 +75,9 @@ class Main {
     await this.client.login(process.env.TOKEN);
   }
 
-  initializeAnnouncememts() {
+  initializeTasks() {
     new Announcements(this.client);
+    new SocialStatusDisplay();
   }
 }
 

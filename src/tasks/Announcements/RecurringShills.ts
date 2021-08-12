@@ -1,7 +1,7 @@
 import {Client, TextChannel} from 'discord.js';
-import {randomInt} from '../utils';
-import {cache} from '../cache';
-import {ShillMessageDataService} from '../services/ShillMessageDataService';
+import {randomInt} from '../../utils';
+import {cache} from '../../cache';
+import {ShillMessageDataService} from '../../services/ShillMessageDataService';
 
 export class RecurringShills {
   private shillOrder: number[] = [];

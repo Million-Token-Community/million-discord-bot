@@ -1,4 +1,3 @@
-// import nodeFetch from 'node-fetch';
 import * as Snoowrap from 'snoowrap';
 
 export class RedditService {

@@ -5,7 +5,7 @@ import {channelIds} from '../../channel-IDs';
 
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;
-  twitterName = 'Twitter Followers: ';
+  twitterName = 'Twitter ';
 
   constructor() {
     this.getData();
@@ -27,13 +27,11 @@ export class SocialStatusDisplay {
 
   async getTwitterCount(): Promise<void> {
     try {
-      const numFormatter = new Intl.NumberFormat('en-us');
       const followers = await TwitterService.getFollowerCount();
-      const formattedFollowers = numFormatter.format(followers);
 
       await this.setChannelName(
         channelIds.twitterStats,
-        this.twitterName + formattedFollowers
+        this.twitterName + followers
       );
     } catch (error) {
       console.log('Twitter followers error: ',error);   

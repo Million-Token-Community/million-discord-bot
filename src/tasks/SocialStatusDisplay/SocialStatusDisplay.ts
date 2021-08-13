@@ -3,6 +3,8 @@ import {VoiceChannel} from 'discord.js';
 import {TwitterService} from '../../services/TwitterService';
 import {channelIds} from '../../channel-IDs';
 import {RedditService} from '../../services/RedditService';
+import {EmailSubsService} from '../../services/EmailSubs';
+import {MillionStatsService} from '../../services/MillionStatsService';
 
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;
@@ -20,6 +22,8 @@ export class SocialStatusDisplay {
       this.rService = await new RedditService();
       this.getTwitterCount();
       this.getRedditCount();
+      this.getEmailSubCount();
+      this.getHoldersCount();
     } catch (error) {
       console.log('Error fetching social status data: ', error);
     } 
@@ -49,7 +53,24 @@ export class SocialStatusDisplay {
       await this.setChannelName(channelIds.redditStats, `Reddit ${subs}`);
     } catch (error) {
       console.log('Reddit subs error: ', error);
-       
+    }
+  }
+
+  async getEmailSubCount(): Promise<void> {
+    try {
+      const count = await EmailSubsService.getSubsCount();
+      await this.setChannelName(channelIds.emailSubsChannel, `EmailSubs ${count}`);
+    } catch (error) {
+      console.log('Email subs error:', error);
+    }
+  }
+
+  async getHoldersCount(): Promise<void> {
+    try {
+      const holders = await MillionStatsService.getHolders();
+      await this.setChannelName(channelIds.holdersChannel, `Holders ${holders}`);
+    } catch (error) {
+      console.log('Holders count error:', error);
     }
   }
 }

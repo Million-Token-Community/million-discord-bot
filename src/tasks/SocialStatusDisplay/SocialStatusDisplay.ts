@@ -59,7 +59,7 @@ export class SocialStatusDisplay {
   async getEmailSubCount(): Promise<void> {
     try {
       const count = await EmailSubsService.getSubsCount();
-      await this.setChannelName(channelIds.emailSubsChannel, `EmailSubs ${count}`);
+      await this.setChannelName(channelIds.emailSubsChannel, `Email Subs ${count}`);
     } catch (error) {
       console.log('Email subs error:', error);
     }

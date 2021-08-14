@@ -28,7 +28,19 @@ export class ShillMessageDataService {
       .all();
 
     records.forEach(record => {
-      items.push(this.shillMessage(record));
+      const content = record.get('content') as string;
+      const expiry = record.get('expiry') as string;
+      let expiredDate: number;
+      let currentDate: number;
+    
+      if (expiry) {
+        expiredDate = Date.parse(expiry);
+        currentDate = Date.now();
+      }
+      
+      if (content && (!expiry || expiredDate > currentDate)) {
+        items.push(this.shillMessage(record));
+      }
     });
 
     return items;

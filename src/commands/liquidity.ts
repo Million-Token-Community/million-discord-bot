@@ -1,10 +1,11 @@
 import { SlashCommand } from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
-  
+
 
   constructor(creator) {
     super(creator, {
@@ -32,15 +33,15 @@ module.exports = class HelloCommand extends SlashCommand {
     // Not required initially, but required for reloading with a fresh file.
     this.filePath = __filename;
   }
-  
-  
+
+
   async run(ctx) {
 
-    var currentSubCommandName = '';
-    var currentSubCommandDesc = '';//todo define this in a static string later.
-    var token1Name = '';
-    var poolId = '0x84383fb05f610222430f69727aa638f8fdbf5cc1';//USDC MM 1% Pool as default
-    
+    let currentSubCommandName = '';
+    let currentSubCommandDesc = '';//todo define this in a static string later.
+    let token1Name = '';
+    let poolId = '0x84383fb05f610222430f69727aa638f8fdbf5cc1';//USDC MM 1% Pool as default
+
 
     //console.log(ctx);
 
@@ -49,7 +50,7 @@ module.exports = class HelloCommand extends SlashCommand {
         currentSubCommandName = ctx.subcommands[0];
 
         if (currentSubCommandName == 'usdc') {
-          
+
           poolId = '0x84383fb05f610222430f69727aa638f8fdbf5cc1';
           currentSubCommandDesc = 'MM / USDC 1% Pool';
           token1Name = 'USDC';
@@ -78,7 +79,7 @@ module.exports = class HelloCommand extends SlashCommand {
           liquidity
           totalValueLockedToken0
           totalValueLockedToken1
-          
+
           poolDayData(orderBy:date, orderDirection:desc,first : 1){
             date
             volumeUSD
@@ -98,11 +99,11 @@ module.exports = class HelloCommand extends SlashCommand {
         body.on('data', data => {
           const json = JSON.parse(data)
           //console.log(json)
-          let volumeUSD_value = json.data.pool.poolDayData[0].volumeUSD;
-          let priceMM = json.data.pool.poolDayData[0].token0Price;
-          let priceUSDC = json.data.pool.poolDayData[0].token1Price;//could be eth in case of other pool
-          let tvl_MM = json.data.pool.totalValueLockedToken0;
-          let tvl_USDC = json.data.pool.totalValueLockedToken1;//could be eth in case of other pool
+          const volumeUSD_value = json.data.pool.poolDayData[0].volumeUSD;
+          const priceMM = json.data.pool.poolDayData[0].token0Price;
+          const priceUSDC = json.data.pool.poolDayData[0].token1Price;//could be eth in case of other pool
+          const tvl_MM = json.data.pool.totalValueLockedToken0;
+          const tvl_USDC = json.data.pool.totalValueLockedToken1;//could be eth in case of other pool
 
 
 
@@ -132,7 +133,7 @@ module.exports = class HelloCommand extends SlashCommand {
       }
 
       getData()
-    
-    
+
+
   }
 };

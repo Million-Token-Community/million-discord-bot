@@ -9,7 +9,7 @@ import {MillionStatsService} from '../../services/MillionStatsService';
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;
   twitterName = 'Twitter ';
-  rService: RedditService; 
+  rService: RedditService;
 
   constructor() {
 
@@ -26,7 +26,7 @@ export class SocialStatusDisplay {
       this.getHoldersCount();
     } catch (error) {
       console.log('Error fetching social status data: ', error);
-    } 
+    }
   }
 
   async setChannelName(id: string, name: string): Promise<void> {
@@ -43,7 +43,7 @@ export class SocialStatusDisplay {
         this.twitterName + followers
       );
     } catch (error) {
-      console.log('Twitter followers error: ',error);   
+      console.log('Twitter followers error: ',error);
     }
   }
 

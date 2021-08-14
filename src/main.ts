@@ -57,7 +57,7 @@ class Main {
 
     console.log('Initializing listeners...');
     this.initializeListeners();
-    
+
     this.creator
       .withServer(
         new GatewayServer(
@@ -69,7 +69,7 @@ class Main {
       .registerCommandsIn(path.join(__dirname, 'commands'))
       .syncCommands();
 
-      this.messageHandlerManager = new MessageHandlerManager() 
+      this.messageHandlerManager = new MessageHandlerManager()
       .add(new SuggestionsBox())
 
     await this.client.login(process.env.TOKEN);

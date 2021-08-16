@@ -16,7 +16,7 @@ export class ShillMessageDataService {
     .base('apph8Ekdivj4iBcKd')('shill_messages');
 
   static async getAllShillMessages(): Promise<ShillMessage[]> {
-    const items: ShillMessage[] = [];
+    const messages: ShillMessage[] = [];
 
     const queryParams: QueryParams<FieldSet> = {
       view: 'Grid view',
@@ -30,20 +30,22 @@ export class ShillMessageDataService {
     records.forEach(record => {
       const content = record.get('content') as string;
       const expiry = record.get('expiry') as string;
-      let expiredDate: number;
-      let currentDate: number;
-    
-      if (expiry) {
+      const currentDate = Date.now();
+      let expiredDate = -Infinity;
+
+      if (typeof expiry === 'string') {
         expiredDate = Date.parse(expiry);
-        currentDate = Date.now();
       }
+
+      const hasContent = typeof content === 'string';
+      const contentHasExpired = currentDate >= expiredDate;
       
-      if (content && (!expiry || expiredDate > currentDate)) {
-        items.push(this.shillMessage(record));
+      if (hasContent && !contentHasExpired) {
+        messages.push(this.shillMessage(record));
       }
     });
 
-    return items;
+    return messages;
   }
 
   static async getShillMessageById(id: string): Promise<ShillMessage> {

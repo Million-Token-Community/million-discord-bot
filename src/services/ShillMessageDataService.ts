@@ -31,7 +31,7 @@ export class ShillMessageDataService {
       const content = record.get('content') as string;
       const expiry = record.get('expiry') as string;
       const currentDate = Date.now();
-      let expiredDate = -Infinity;
+      let expiredDate = Infinity;
 
       if (typeof expiry === 'string') {
         expiredDate = Date.parse(expiry);

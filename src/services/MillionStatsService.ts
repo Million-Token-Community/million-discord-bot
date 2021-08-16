@@ -1,5 +1,6 @@
-import fetch, {Response} from 'node-fetch';
+import fetch, {Response, RequestInit} from 'node-fetch';
 import { cache } from '../cache';
+import {formatPercentageChange} from '../utils';
 
 export class MillionStatsService {
   static async getHolders(): Promise<number> {
@@ -35,4 +36,36 @@ export class MillionStatsService {
 
     return holders;  
   }
+
+  static async getPriceData(): Promise<PriceDataMM> {
+    const cacheKey = 'price';
+    const hasCachedData = await cache.has(cacheKey);
+
+    if (hasCachedData) {
+      return await cache.get('price') as PriceDataMM;
+    }
+
+    const apiUrl = `https://api.nomics.com/v1/currencies/ticker?key=${process.env.NOMICS_API_TOKEN}&ids=MM4`;
+    const init: RequestInit = {
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+      },
+    }
+    
+    const apiResponse = await fetch(apiUrl, init);
+    const apiResponseBody = await apiResponse.json();
+    const priceChangeRaw = apiResponseBody[0]['1d'].price_change_pct;
+    const priceChange = formatPercentageChange(priceChangeRaw);
+    const price = parseFloat(apiResponseBody[0].price).toFixed(2);
+    const priceData = {priceChange, price};
+
+    cache.set(cacheKey, priceData);
+
+    return priceData;
+  }
+}
+
+export interface PriceDataMM {
+  price: string;
+  priceChange: string;
 }

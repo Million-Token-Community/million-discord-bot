@@ -37,7 +37,6 @@
     <li><a href="#environment-variables">Environment Variables</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
   </ol>
 </details>
 
@@ -128,10 +127,3 @@ npm run start:dev
 ## Contributing
 
 See [CONTRIBUTING.md](https://github.com/Million-Token-Community/million-discord-bot/blob/main/CONTRIBUTING.md) for ways to get started.
-
-<!-- LICENSE -->
-
-## License
-
-Distributed under the MIT License. See [LICENSE](https://github.com/Million-Token-Community/million-discord-bot/blob/main/LICENSE) for more
-information.

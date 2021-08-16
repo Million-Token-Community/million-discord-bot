@@ -24,6 +24,7 @@ export class SocialStatusDisplay {
       this.getRedditCount();
       this.getEmailSubCount();
       this.getHoldersCount();
+      this.getPrice();
     } catch (error) {
       console.log('Error fetching social status data: ', error);
     } 
@@ -71,6 +72,15 @@ export class SocialStatusDisplay {
       await this.setChannelName(channelIds.holdersChannel, `Holders ${holders}`);
     } catch (error) {
       console.log('Holders count error:', error);
+    }
+  }
+
+  async getPrice(): Promise<void> {
+    try {
+      const {price} = await MillionStatsService.getPriceData();
+      await this.setChannelName(channelIds.priceChannel, `Price $${price}`);
+    } catch (error) {
+      console.log('Price error:', error);
     }
   }
 }

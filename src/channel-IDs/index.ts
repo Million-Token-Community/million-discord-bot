@@ -6,4 +6,5 @@ export const channelIds = {
   redditStats: '875518239906598922',
   emailSubsChannel: '875776790734454805',
   holdersChannel: '875776895566876703',
+  telegramStats: '876802098333909022'  //  test server telegram channel ID
 }

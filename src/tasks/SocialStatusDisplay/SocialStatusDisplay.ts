@@ -5,6 +5,7 @@ import {channelIds} from '../../channel-IDs';
 import {RedditService} from '../../services/RedditService';
 import {EmailSubsService} from '../../services/EmailSubs';
 import {MillionStatsService} from '../../services/MillionStatsService';
+import {TelegramService} from '../../services/TelegramService';
 
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;
@@ -20,10 +21,12 @@ export class SocialStatusDisplay {
   async getData(): Promise<void> {
     try {
       this.rService = await new RedditService();
+
       this.getTwitterCount();
       this.getRedditCount();
       this.getEmailSubCount();
       this.getHoldersCount();
+      this.getTelegramCount();
     } catch (error) {
       console.log('Error fetching social status data: ', error);
     } 
@@ -71,6 +74,15 @@ export class SocialStatusDisplay {
       await this.setChannelName(channelIds.holdersChannel, `Holders ${holders}`);
     } catch (error) {
       console.log('Holders count error:', error);
+    }
+  }
+
+  async getTelegramCount(): Promise<void> {
+    try {
+      const membersCount = await TelegramService.getMemberCount();
+      await this.setChannelName(channelIds.telegramStats, `Telegram ${membersCount}`);
+    } catch (error) {
+      console.log(error);
     }
   }
 }

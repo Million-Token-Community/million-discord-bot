@@ -1,4 +1,4 @@
-name: Lint
+name: Lint & Build
 
 on: [ push, pull_request ]
 
@@ -20,8 +20,25 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build typescript
-        run: npm run build
-
       - name: Run linting
         run: npm run lint
+    
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build typescript
+        run: npm run build

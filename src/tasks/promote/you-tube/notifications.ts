@@ -1,7 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import * as Parser from 'rss-parser';
 import { Client, TextChannel } from 'discord.js';
+import { channels } from './youtubeChannels.json';
 
 interface YouTubeChannel {
   name: string
@@ -20,6 +19,7 @@ export class YouTubeNotification {
     this.parser = new Parser()
     this.client = client
     this.channelId = channelId
+    this.youtubeChannels = channels;
     this.publishPeriod = 5 * 60 * 1000 // Period where video considered as new published. Default 5min.
     this.watchInterval = 1 * 60 * 1000 // Time when new feed request should be made. Default 1min.
     this.start()
@@ -48,20 +48,9 @@ export class YouTubeNotification {
   }
 
   loopTroughTheChannels(): void {
-    this.getChannels();
     this.youtubeChannels.forEach((channel: YouTubeChannel) => {
       this.parseChannel(channel.id);
     });
-  }
-
-  getChannels(): void {
-    try {
-      const data = fs.readFileSync(path.resolve(__dirname, '../../youtubeChannels.json'), 'utf8');
-      const { channels } = JSON.parse(data);
-      this.youtubeChannels = channels;
-    } catch(e) {
-      console.error('Cannot read youtubeChannels.json:', e);
-    }
   }
 
   async sendNotification(msg: string): Promise<void> {

@@ -14,7 +14,7 @@ export class SocialStatusDisplay {
   constructor() {
 
     this.getData();
-    this.timer = setInterval(this.getData.bind(this), 5 * 60 * 1e3); // update 5 minutes
+    this.timer = setInterval(this.getData.bind(this), 1 * 60 * 1e3); // update every minute
   }
 
   async getData(): Promise<void> {
@@ -68,10 +68,13 @@ export class SocialStatusDisplay {
 
   async getHoldersCount(): Promise<void> {
     try {
-      const holders = await MillionStatsService.getHolders();
-      await this.setChannelName(channelIds.holdersChannel, `Holders ${holders}`);
+      const resp = await MillionStatsService.getHolders();
+
+      if (resp.error) throw resp.error;
+
+      await this.setChannelName(channelIds.holdersChannel, `Holders ${resp.data}`);
     } catch (error) {
-      console.log('Holders count error:', error);
+      console.log('Holders count error: \n', error);
     }
   }
 

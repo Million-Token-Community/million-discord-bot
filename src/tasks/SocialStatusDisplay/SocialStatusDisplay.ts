@@ -5,6 +5,7 @@ import {channelIds} from '../../channel-IDs';
 import {RedditService} from '../../services/RedditService';
 import {EmailSubsService} from '../../services/EmailSubs';
 import {MillionStatsService} from '../../services/MillionStatsService';
+import {FacebookService} from '../../services/FacebookService';
 
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;
@@ -71,6 +72,16 @@ export class SocialStatusDisplay {
       await this.setChannelName(channelIds.holdersChannel, `Holders ${holders}`);
     } catch (error) {
       console.log('Holders count error:', error);
+    }
+  }
+
+  async getFacebookGroupMemberCount(): Promise<void> {
+    try {
+      const groupMemberCount = await FacebookService.getGroupMemberCount();
+
+      await this.setChannelName(channelIds.facebook, `Facebook ${groupMemberCount}`);
+    } catch (error) {
+      console.log('Facebook group member count error: ', error);   
     }
   }
 }

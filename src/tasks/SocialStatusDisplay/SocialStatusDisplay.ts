@@ -14,7 +14,7 @@ export class SocialStatusDisplay {
   constructor() {
 
     this.getData();
-    this.timer = setInterval(this.getData.bind(this), 60 * 1e3); // update every minute
+    this.timer = setInterval(this.getData.bind(this), 5 * 60 * 1e3); // update 5 minutes
   }
 
   async getData(): Promise<void> {
@@ -26,7 +26,7 @@ export class SocialStatusDisplay {
       this.getHoldersCount();
       this.getPrice();
     } catch (error) {
-      console.log('Error fetching social status data: ', error);
+      console.log('Error fetching social status data: \n', error);
     } 
   }
 
@@ -77,10 +77,14 @@ export class SocialStatusDisplay {
 
   async getPrice(): Promise<void> {
     try {
-      const {price} = await MillionStatsService.getPriceData();
-      await this.setChannelName(channelIds.priceChannel, `Price $${price}`);
+      const resp = await MillionStatsService.getPriceData();
+
+      if (resp.hasError) throw resp.error;
+
+      const {price} = resp.data;
+      await this.setChannelName(channelIds.price, `Price $${price}`);
     } catch (error) {
-      console.log('Price error:', error);
+      console.log('Error updating price channel: \n', error);
     }
   }
 }

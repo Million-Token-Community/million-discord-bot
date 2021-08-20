@@ -43,7 +43,7 @@ export class YouTubeNotification {
   }
 
   isRecentlyPublished(now: number, pub: number): boolean {
-    const publishedMinutesAgo = (now - pub) / 60000;
+    const publishedMinutesAgo = (now - pub);
     return publishedMinutesAgo < this.publishPeriod;
   }
 

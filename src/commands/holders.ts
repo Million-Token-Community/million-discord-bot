@@ -26,7 +26,7 @@ module.exports = class HelloCommand extends SlashCommand {
         `<:pepeholdmm:861835461458657331> Current holders count is **${holders}**.`,
       );
     } catch (error) {
-      console.log('"holders" command error: \n', error.message);
+      console.log('"holders" command error: \n', error);
       return await ctx.send(`Something went wrong - try again a bit later.`);
     }
   }

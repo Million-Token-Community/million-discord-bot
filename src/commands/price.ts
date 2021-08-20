@@ -16,10 +16,14 @@ module.exports = class HelloCommand extends SlashCommand {
   async run(ctx: CommandContext) { 
     let commandResponse;
     try {
-      const {price, priceChange} = await MillionStatsService.getPriceData();
+      const resp = await MillionStatsService.getPriceData();
+
+      if (resp.hasError) throw resp.error;
+
+      const {price, priceChange} = resp.data;
       commandResponse = `<:mm:861734660081451018> Price is **$${price}** (${priceChange}%).`;
     } catch (error) {
-      console.log('Price command error:', error);
+      console.log('"price" command error:\n', error);
       commandResponse = `Something went wrong - try again a bit later.`;
     }
 

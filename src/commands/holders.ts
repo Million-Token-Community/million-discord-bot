@@ -15,15 +15,18 @@ module.exports = class HelloCommand extends SlashCommand {
 
   async run(ctx) {
     try {
-      const numHolders = await MillionStatsService.getHolders();
+      const resp = await MillionStatsService.getHolders();
+
+      if (resp.hasError) throw resp.error;
+      
       const numFormatter = new Intl.NumberFormat('en-US');
-      const holders = numFormatter.format(numHolders);      
+      const holders = numFormatter.format(resp.data);      
 
       return await ctx.send(
         `<:pepeholdmm:861835461458657331> Current holders count is **${holders}**.`,
       );
     } catch (error) {
-      console.log(error.message);
+      console.log('"holders" command error: \n', error.message);
       return await ctx.send(`Something went wrong - try again a bit later.`);
     }
   }

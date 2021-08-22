@@ -74,13 +74,7 @@ The current public commands are:
    npm install
    ```
 
-3. Install Typescript
-   ```shell
-   npm install typescript
-   ```
-
 <!-- USAGE EXAMPLES -->
-
 
 ## Environment Variables
 

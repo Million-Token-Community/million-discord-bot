@@ -9,6 +9,8 @@ import * as Express from 'express';
 import {Announcements} from './tasks/Announcements/Announcements';
 import {client} from './discordClient';
 import {SocialStatusDisplay} from './tasks/SocialStatusDisplay/SocialStatusDisplay';
+import { Promotions } from './tasks/Promotion/Promotions';
+import { router } from './tasks/Promotion/YouTube/EndPoints';
 
 class Main {
   private creator: SlashCreator;
@@ -22,6 +24,7 @@ class Main {
 
   initializeApp() {
     const app = Express();
+    app.use('/youtube', router)
 
     app.get('/', (_,res) => {
       return res.send('Million-bot online!')
@@ -78,6 +81,7 @@ class Main {
   initializeTasks() {
     new Announcements(this.client);
     new SocialStatusDisplay();
+    new Promotions(this.client);
   }
 }
 

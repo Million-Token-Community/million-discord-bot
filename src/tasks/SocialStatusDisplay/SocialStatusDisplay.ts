@@ -14,7 +14,7 @@ export class SocialStatusDisplay {
   constructor() {
 
     this.getData();
-    this.timer = setInterval(this.getData.bind(this), 60 * 1e3); // update every minute
+    this.timer = setInterval(this.getData.bind(this), 5 * 60 * 1e3); // update every 5 minutes
   }
 
   async getData(): Promise<void> {

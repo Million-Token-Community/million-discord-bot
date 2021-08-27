@@ -13,7 +13,6 @@ export class RedditService {
   }
 
   async getMMSubCount(): Promise<number> {
-    console.log('Fetching reddit subs...');
     return await this.r.getSubreddit('milliontoken').subscribers;
   }
 }

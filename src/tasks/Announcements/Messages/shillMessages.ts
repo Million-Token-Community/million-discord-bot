@@ -29,7 +29,7 @@ export const shillMessages = [
   `:point_right:  Buy from PancakeSwap:\n` + 
   `<https://exchange.pancakeswap.finance/#/swap?outputCurrency=0xbf05279f9bf1ce69bbfed670813b7e431142afa4>`,
 
-  `:white_check_mark:  Certik has onboarded Million Token!\n\n` +
+  `:white_check_mark:  Certik has approved Million Token!\n\n` +
   `:arrow_forward:  See here: <https://www.certik.org/projects/milliontoken>\n\n` + 
   `https://www.certik.org/api/card/milliontoken.jpg?t=1628333500`,
   

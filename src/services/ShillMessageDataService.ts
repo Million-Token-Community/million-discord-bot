@@ -31,16 +31,17 @@ export class ShillMessageDataService {
       const content = record.get('content') as string;
       const expiry = record.get('expiry') as string;
       const currentDate = Date.now();
+
       let expiredDate = Infinity;
 
       if (typeof expiry === 'string') {
         expiredDate = Date.parse(expiry);
       }
 
-      const hasContent = typeof content === 'string';
+      const isValidContent = typeof content === 'string';
       const contentHasExpired = currentDate >= expiredDate;
       
-      if (hasContent && !contentHasExpired) {
+      if (isValidContent && !contentHasExpired) {
         messages.push(this.shillMessage(record));
       }
     });

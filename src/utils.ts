@@ -22,3 +22,10 @@ export function randomInt(min: number, max?: number): number {
   const num = Math.floor(Math.random() * (max - min + 1) + min);
   return num
 }
+
+export function hasJsonContentType(contentType: string): boolean {
+  const isString = typeof contentType === 'string';
+  const hasJSON = contentType.includes('application/json');
+  
+  return isString && hasJSON;
+}

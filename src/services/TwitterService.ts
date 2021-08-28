@@ -10,8 +10,6 @@ export class TwitterService {
   }
 
   static async getFollowerCount(): Promise<number> {
-    console.log('Fetching Twitter follower count...');
-    
     const url = `${this.BASE_URL}/users/by/username/Million__Token`;
     const qs = queryString.stringify({
       'user.fields': 'public_metrics'

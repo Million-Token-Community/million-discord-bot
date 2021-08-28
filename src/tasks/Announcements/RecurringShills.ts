@@ -44,8 +44,6 @@ export class RecurringShills {
   }
 
   async action(): Promise<void> {
-    console.log('sending message');
-
     try {
       const shills = await cache.get('shill_messages');
       const channel = await this.client.channels.fetch(this.channelId) as TextChannel;

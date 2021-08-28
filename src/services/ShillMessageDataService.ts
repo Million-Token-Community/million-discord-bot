@@ -38,10 +38,10 @@ export class ShillMessageDataService {
         expiredDate = Date.parse(expiry);
       }
 
-      const hasContent = typeof content === 'string';
+      const isValidContent = typeof content === 'string';
       const contentHasExpired = currentDate >= expiredDate;
       
-      if (hasContent && !contentHasExpired) {
+      if (isValidContent && !contentHasExpired) {
         messages.push(this.shillMessage(record));
       }
     });

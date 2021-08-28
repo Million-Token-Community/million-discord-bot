@@ -96,10 +96,14 @@ export class SocialStatusDisplay {
 
   async getTelegramCount(): Promise<void> {
     try {
-      const membersCount = await TelegramService.getMemberCount();
-      await this.setChannelName(channelIds.telegramStats, `Telegram ${membersCount}`);
+      const resp = await TelegramService.getMemberCount();
+      const membersCount = resp.data;
+
+      if (resp.hasError) throw resp.error;
+
+      await this.setChannelName(channelIds.telegramCount, `Telegram ${membersCount}`);
     } catch (error) {
-      console.log(error);
+      console.log('Error updating Telegram Count:\n', error);
     }
   }
 }

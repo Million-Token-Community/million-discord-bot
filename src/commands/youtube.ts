@@ -72,7 +72,6 @@ export class YouTubeCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext): Promise<void> {
-    let resMsg: string;
     try {
 
       if (!this.hasAllowedRoles(ctx)) {
@@ -96,7 +95,6 @@ export class YouTubeCommand extends SlashCommand {
         await this.find(ctx);
       }
 
-      console.log(resMsg)
     } catch(e) {
       console.error(e);
       const embed = this.createStatusEmbed(

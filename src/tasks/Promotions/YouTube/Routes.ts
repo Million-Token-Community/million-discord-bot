@@ -33,8 +33,10 @@ youtube.post('/notification', ({ body, app }, res) => {
   
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     publications.forEach(async (pub: any) => {
-      const { title, videoUrl } = parsePublications(pub);
+      const { title, videoUrl, publishedDate, updatedDate } = parsePublications(pub);
       const { youTubePromotion } = channelIds;
+      const pubDate = new Date(publishedDate);
+      const upDate = new Date(updatedDate);
       
       try {
         const discordChannel = discordClient.channels.cache.get(youTubePromotion);
@@ -44,6 +46,8 @@ youtube.post('/notification', ({ body, app }, res) => {
         }
         
         const msg = `${title} released new video!!\n` +
+                    `Published: ${pubDate.toLocaleString('en-GB', { timeZone: 'UTC', timeZoneName: 'short' })}\n` +
+                    `Updated: ${upDate.toLocaleString('en-GB', { timeZone: 'UTC', timeZoneName: 'short' })}\n` +
                     `${videoUrl}`;
 
         await discordChannel.send(msg);

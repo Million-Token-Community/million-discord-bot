@@ -66,8 +66,7 @@ export class YouTubeCommand extends SlashCommand {
       rolesIds.admins,
       rolesIds.leadAdmin,
       rolesIds.leadAmbassador,
-      rolesIds.leadDev,
-      rolesIds.testRole
+      rolesIds.leadDev
     ]
   }
 

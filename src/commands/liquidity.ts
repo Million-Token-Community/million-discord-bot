@@ -121,9 +121,10 @@ module.exports = class HelloCommand extends SlashCommand {
             //.addField(`1 MM =`, `${formatLargeNumber(priceUSDC)} ${token1Name}`, false)
             //.addField(`1 ${token1Name} =`, `${formatLargeNumber(priceMM)} MM`, false)
             //.addField('\u200B','\u200B', false)
-            .addField('Tokens Locked:', `\u200B`, false)
+            //.addField('Tokens Locked:', `\u200B`, false)
             .addField('MM', `${formatLargeNumber(tvl_MM)}`, true)
             .addField(`${token1Name}`, `${formatLargeNumber(tvl_USDC)}`, true)
+            .addField('Locked!', `\u200B`, true)
 
 
           //console.log(exampleEmbed)

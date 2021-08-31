@@ -86,7 +86,7 @@ module.exports = class ManageShillsCommands extends SlashCommand {
   }
 
   isBotCommandsChannel(ctx: CommandContext) {
-    return ctx.channelID === channelIds.lounge;
+    return ctx.channelID === channelIds.botCommandsChannel;
   }
 
   hasAllowedRoles(ctx: CommandContext) {

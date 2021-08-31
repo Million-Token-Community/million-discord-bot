@@ -4,18 +4,19 @@ import {
   MessageEmbedOptions
 } from 'slash-create';
 import { ShillMessageDataService, ShillMessage } from '../services/ShillMessageDataService';
-import { cache } from '../cache';
 import {channelIds} from '../channel-IDs'
 import {client} from '../discordClient';
 import { Message, TextChannel } from 'discord.js';
 import {commandOptions} from './manage-shills.command-options'
+import {recuringShills} from '../tasks/Announcements/RecurringShills'
 
 module.exports = class ManageShillsCommands extends SlashCommand {
-  allowedRoles = [          //  only allow Lead Admins, Admins, Lead Dev, and Lead Ambassador
-    '870411279108571216',   // '872062467621138481', 
-    '870429095941517332',   // '872062467621138479', 
-    '870435957969657886',   // '872062467621138472', 
-    '870501520796418059'    // '872062467612762139'
+  //  only allow Lead Admins, Admins, Lead Dev, and Lead Ambassador
+  allowedRoles = [          
+    '870411279108571216',  
+    '870429095941517332',   
+    '870435957969657886',    
+    '870501520796418059'    
   ];
 
   constructor(creator) {
@@ -46,8 +47,6 @@ module.exports = class ManageShillsCommands extends SlashCommand {
         );
       }
 
-      console.log(ctx.options);
-
       if (ctx.options.list?.shill_id) {
         return await this.listSingleMessage(ctx);
       }
@@ -68,9 +67,13 @@ module.exports = class ManageShillsCommands extends SlashCommand {
         return await this.deleteMessage(ctx);
       }
 
+      if (ctx.options.update_cache) {
+        return await this.updateShillMessageCache(ctx);
+      }
+
       return await ctx.send('No command selected', {ephemeral: true});
     } catch (error) {
-      console.log('MANAGE_MESSAGE_ERROR:', error);
+      console.log('MANAGE_MESSAGE_ERROR:\n', error);
 
       const embed = this.createStatusEmbed(
         error.title || 'Error',
@@ -83,7 +86,7 @@ module.exports = class ManageShillsCommands extends SlashCommand {
   }
 
   isBotCommandsChannel(ctx: CommandContext) {
-    return ctx.channelID === channelIds.botCommandsChannel;
+    return ctx.channelID === channelIds.lounge;
   }
 
   hasAllowedRoles(ctx: CommandContext) {
@@ -237,14 +240,8 @@ module.exports = class ManageShillsCommands extends SlashCommand {
   }
 
   async updateShillMessageCache(ctx: CommandContext) {
-    const records = await ShillMessageDataService.getAllShillMessages();
-    const messages: string[] = [];
+    await recuringShills.reset();
 
-    records.forEach(entry => {
-      messages.push(entry.content);
-    })
-
-    await cache.set('shill_messages', messages, 0);
     const embed = this.createStatusEmbed(
       'Success', 
       'Cache has been updated.'

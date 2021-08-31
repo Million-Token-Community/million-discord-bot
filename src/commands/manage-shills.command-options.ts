@@ -79,6 +79,6 @@ export const commandOptions: ApplicationCommandOption[] = [
   {
     type: CommandOptionType.SUB_COMMAND,
     name: 'update_cache',
-    description: 'Updates message cache. Use if changes to shill messages need to take affect immediately. Use sparingly.',
+    description: 'Updates message cache to apply shill message changes immediately.',
   },
 ]

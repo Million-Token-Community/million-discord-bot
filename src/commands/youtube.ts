@@ -82,15 +82,15 @@ export class YouTubeCommand extends SlashCommand {
 
       const { subscribe, unsubscribe, find } = ctx.options;
 
-      if (subscribe) {
+      if (subscribe !== undefined) {
         await this.subscribe(ctx);
       }
 
-      if (unsubscribe) {
+      if (unsubscribe !== undefined) {
         await this.unsubscribe(ctx);
       }
 
-      if (find) {
+      if (find !== undefined) {
         await this.find(ctx);
       }
 
@@ -111,7 +111,7 @@ export class YouTubeCommand extends SlashCommand {
 
     const recordByName = await DataService.getChannelByName(name);
 
-    if (recordByName) {
+    if (typeof recordByName !== 'undefined') {
       throw {
         title: 'Channel exists',
         message: `Channel: "${recordByName.name}" with ID: "${recordByName.channel_id}" already being used`
@@ -120,7 +120,7 @@ export class YouTubeCommand extends SlashCommand {
 
     const recordByChannelId = await DataService.getChannelByChannelId(channel_id);
 
-    if (recordByChannelId) {
+    if (typeof recordByChannelId !== 'undefined') {
       throw {
         title: 'Channel exists',
         message: `Channel: "${recordByChannelId.name}" with ID: "${recordByChannelId.channel_id}" already being used`

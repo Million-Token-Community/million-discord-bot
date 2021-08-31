@@ -6,9 +6,9 @@ import * as path from 'path';
 import { MessageHandlerManager } from './handlers/MessageHandlerManager';
 import { SuggestionsBox } from './handlers/SuggestionsBox';
 import * as Express from 'express';
-// import {Announcements} from './tasks/Announcements/Announcements';
+import {Announcements} from './tasks/Announcements/Announcements';
 import {client} from './discordClient';
-// import {SocialStatusDisplay} from './tasks/SocialStatusDisplay/SocialStatusDisplay';
+import {SocialStatusDisplay} from './tasks/SocialStatusDisplay/SocialStatusDisplay';
 import *  as xmlparser from 'express-xml-bodyparser';
 import { youtube } from './tasks/Promotions/YouTube/Routes';
 
@@ -89,8 +89,8 @@ class Main {
   }
 
   initializeTasks() {
-    // new Announcements(this.client);
-    // new SocialStatusDisplay();
+    new Announcements(this.client);
+    new SocialStatusDisplay();
   }
 }
 

@@ -1,5 +1,21 @@
 import * as express from "express";
+import { Client, TextChannel } from "discord.js";
 import { channelIds } from "../../../channel-IDs";
+
+export interface RawPublication {
+  [key: string]: unknown
+}
+
+export interface Publication {
+  title: string,
+  author: string,
+  channelUrl: string,
+  channelId: string,
+  videoId: string, 
+  videoUrl: string, 
+  publishedDate: string, 
+  updatedDate: string
+}
 
 export const youtube = express.Router();
 
@@ -15,10 +31,16 @@ youtube.post('/notification', ({ body, app }, res) => {
       throw new Error('Request without publication');
     };
     
-    const discordClient = app.get('discordClient');
+    const discordClient = app.get('discordClient') as Client;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parsePublications = (pub: any) => {
+    if (!(discordClient instanceof Client)) {
+      throw {
+        title: 'Discord client error',
+        message: 'discordCleint in not Client instance'
+      }
+    }
+
+    const parsePublications = (pub: RawPublication): Publication => {
       return {
         title: pub.author[0].name[0],
         author: pub.author[0].uri[0],
@@ -31,15 +53,14 @@ youtube.post('/notification', ({ body, app }, res) => {
       }
     };
   
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    publications.forEach(async (pub: any) => {
+    publications.forEach(async (pub: RawPublication) => {
       const { title, videoUrl, publishedDate, updatedDate } = parsePublications(pub);
       const { youTubePromotion } = channelIds;
       const pubDate = new Date(publishedDate);
       const upDate = new Date(updatedDate);
       
       try {
-        const discordChannel = discordClient.channels.cache.get(youTubePromotion);
+        const discordChannel = discordClient.channels.cache.get(youTubePromotion) as TextChannel;
   
         if (!discordChannel) {
           throw new Error(`Could not find channel with ID: ${youTubePromotion}`);

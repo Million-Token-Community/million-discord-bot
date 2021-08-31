@@ -13,16 +13,6 @@ export function formatPercentageChange(number: number) {
   return `${(number > 0 ? '+' : '')}${(number * 100).toFixed(2)}`;
 }
 
-export function randomInt(min: number, max?: number): number {
-  if (!max) {
-    max = min;
-    min = 0;
-  }
-
-  const num = Math.floor(Math.random() * (max - min + 1) + min);
-  return num
-}
-
 export function hasJsonContentType(contentType: string): boolean {
   const isString = typeof contentType === 'string';
   const hasJSON = contentType.includes('application/json');

@@ -7,5 +7,5 @@ export const channelIds = {
   emailSubsChannel: '875776790734454805',
   holdersChannel: '875776895566876703',
   price: '881143911404412968',
-  telegramCount: '876802098333909022',
+  telegramCount: '881145014481199144',
 }

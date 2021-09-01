@@ -11,6 +11,7 @@ import {client} from './discordClient';
 import {SocialStatusDisplay} from './tasks/SocialStatusDisplay/SocialStatusDisplay';
 import *  as xmlparser from 'express-xml-bodyparser';
 import { youtube } from './tasks/Promotions/YouTube/Routes';
+import { YouTubeSubscription } from './tasks/Promotions/YouTube/Subscription';
 
 class Main {
   private creator: SlashCreator;
@@ -91,6 +92,7 @@ class Main {
   initializeTasks() {
     new Announcements(this.client);
     new SocialStatusDisplay();
+    new YouTubeSubscription();
   }
 }
 

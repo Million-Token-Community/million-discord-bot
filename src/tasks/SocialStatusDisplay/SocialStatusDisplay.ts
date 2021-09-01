@@ -88,7 +88,7 @@ export class SocialStatusDisplay {
       if (resp.hasError) throw resp.error;
 
       const {price} = resp.data;
-      await this.setChannelName(channelIds.price, `Price $${price}`);
+      await this.setChannelName(channelIds.price, `MM Price $${price}`);
     } catch (error) {
       console.log('Error updating price channel: \n', error);
     }

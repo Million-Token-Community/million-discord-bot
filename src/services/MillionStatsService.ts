@@ -158,6 +158,7 @@ export class MillionStatsService {
               priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
               console.log(`priceData = ${priceData}`)//TODO comment out after testing
               cache.set(cacheKey, priceData);
+              console.log(`after setting cache`)//TODO comment out after testing
 
               return new ServiceResponse(priceData);
 
@@ -180,6 +181,7 @@ export class MillionStatsService {
 
       getData()
 
+      console.log(`after getData()`)//TODO comment out after testing
       //if we got here it means the getData()method above did not reach the return new ServiceResponse(priceData); call
       return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
     

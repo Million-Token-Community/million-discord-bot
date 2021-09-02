@@ -81,8 +81,34 @@ export class MillionStatsService {
   //@ts-ignore 
   static async getPriceData(): Promise<ServiceResponse<PriceDataMM>> {
     try {
-     
+      const cacheKey = 'priceData';
+      const hasCachedData = await cache.has(cacheKey);
       let priceData: PriceDataMM;
+      //let isValidNumber: boolean;
+
+      if (hasCachedData) {
+        priceData = await cache.get(cacheKey) as PriceDataMM;
+        const isPriceDataMM = priceData instanceof PriceDataMM;
+        const isValidPriceFormat = PriceDataMM
+          .priceRegex
+          .test(priceData.price);
+
+        const isValidPriceChangeFormat = PriceDataMM
+          .priceChangeRegex
+          .test(priceData.priceChange);
+
+        const isValidCacheData = isPriceDataMM 
+          && isValidPriceFormat 
+          && isValidPriceChangeFormat;
+
+        if (!isValidCacheData) {
+          throw new Error(`${cacheKey} cache value is invalid`);
+        }
+
+        return new ServiceResponse(priceData);
+      }
+     
+      
       const apiUrl_graphQL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
       const query = `
       {
@@ -120,7 +146,7 @@ export class MillionStatsService {
           //to get percentage since the method we have already does that.
           let change_24hour = formatPercentageChange((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday);
           priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
-         
+          cache.set(cacheKey, priceData);
           return new ServiceResponse(priceData);
 
         } else {

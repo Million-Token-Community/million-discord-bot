@@ -19,6 +19,9 @@ module.exports = class HelloCommand extends SlashCommand {
       //const resp = await MillionStatsService.getPriceData();
       const resp = await new MillionStatsService().getPriceData_2();
 
+      if (resp == undefined){
+        return
+      }
       if (resp.hasError) throw resp.error;
 
       const {price, priceChange} = resp.data;

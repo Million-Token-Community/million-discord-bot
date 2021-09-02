@@ -114,8 +114,8 @@ module.exports = class HelloCommand extends SlashCommand {
             .addFields(
                 { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, Inline: true },
                 //{ name: '\u200B', value: '\u200B', Inline: false },
-                { name: `1 MM:`, value: `${formatLargeNumber(priceUSDC)} ${token1Name}`, Inline: true },
-                { name: `1 ${token1Name}:`, value: `${formatLargeNumber(priceMM)} MM`, Inline: true },
+                { name: `1 MM:`, value: `${priceUSDC.toFixed(2)} ${token1Name}`, Inline: true },
+                { name: `1 ${token1Name}:`, value: `${priceMM.toFixed(4)} MM`, Inline: true },
             )
             //.addField(`Today's Volume:`, `${formatLargeNumber(volumeUSD_value)}`, false)
             //.addField(`1 MM =`, `${formatLargeNumber(priceUSDC)} ${token1Name}`, false)

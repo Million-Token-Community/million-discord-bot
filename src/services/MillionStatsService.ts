@@ -134,7 +134,14 @@ export class MillionStatsService {
       };
 
       //const getData = async () => {
-        const { body } = await fetch(apiUrl_graphQL, init_graphQL);
+        //const { body } = await fetch(apiUrl_graphQL, init_graphQL);
+      
+        const resp = await fetch(apiUrl_graphQL, init_graphQL);
+      const json = await resp.json();
+      console.log(json);
+      
+
+      /*
         body.on('data', data => {
           if (data === undefined) {
             throw new Error('Invalid API response');
@@ -179,7 +186,7 @@ export class MillionStatsService {
 
       //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
     //}
-    
+    */
 
       //getData()
 
@@ -253,7 +260,7 @@ export class MillionStatsService {
 
       //const getData = async () => {
         const { body } = await fetch(apiUrl_graphQL, init_graphQL);
-        await body.on('data', data => {
+        body.on('data', data => {
           if (data === undefined) {
             throw new Error('Invalid API response');
           }

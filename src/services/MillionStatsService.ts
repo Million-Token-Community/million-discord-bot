@@ -200,7 +200,7 @@ export class MillionStatsService {
 */
 
   //@ts-ignore 
-  async getPriceData_2(): Promise<ServiceResponse<PriceDataMM>> {
+  static async getPriceData(): Promise<ServiceResponse<PriceDataMM>> {
     try {
       /*
       const cacheKey = 'priceData';

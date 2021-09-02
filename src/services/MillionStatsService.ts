@@ -37,12 +37,8 @@ export class MillionStatsService {
         fetch(covalentUrl, init),
       ]);
 
-      const ethContentType = ethExplorerResp.headers.get('Content-type');
-      const isEthContentJSON = hasJsonContentType(ethContentType);
-
-      const covalentContentType = covalentResp.headers.get('Content-type');
-      const isCovalentContentJSON = hasJsonContentType(covalentContentType);
-
+      const isEthContentJSON = hasJsonContentType(ethExplorerResp);
+      const isCovalentContentJSON = hasJsonContentType(covalentResp);
       const isValidJSON = isEthContentJSON && isCovalentContentJSON;
 
       if (!isValidJSON) throw new Error ('API responses should return JSON');
@@ -75,7 +71,7 @@ export class MillionStatsService {
 
       return new ServiceResponse(holders);  
     } catch (error) {
-      return new ServiceResponse(null, true, error);
+      return new ServiceResponse(null, error);
     }
   }
 
@@ -116,8 +112,7 @@ export class MillionStatsService {
       }
       
       const apiResponse = await fetch(apiUrl, init);
-      const contentType = apiResponse.headers.get('Content-type');
-      const isValdJSON = hasJsonContentType(contentType);
+      const isValdJSON = hasJsonContentType(apiResponse);
     
       if (!isValdJSON) {
         throw new Error('fetch response should return JSON');
@@ -157,7 +152,7 @@ export class MillionStatsService {
 
       return new ServiceResponse(priceData);
     } catch (error) {
-      return new ServiceResponse(null, true, error);
+      return new ServiceResponse(null, error);
     }
   }
 }

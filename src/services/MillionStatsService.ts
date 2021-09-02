@@ -183,7 +183,8 @@ export class MillionStatsService {
 
       console.log(`after getData()`)//TODO comment out after testing
       //if we got here it means the getData()method above did not reach the return new ServiceResponse(priceData); call
-      return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
+      //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
+      return new ServiceResponse(priceData);
     
     } catch (error) {
       return new ServiceResponse(null, true, error);

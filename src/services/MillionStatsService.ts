@@ -127,7 +127,7 @@ export class MillionStatsService {
         }
       }
       `
-      const init_graphQL = {
+      const init_graphQL: RequestInit = {
         method: 'POST',
         body: JSON.stringify({ query }),
       };
@@ -149,7 +149,10 @@ export class MillionStatsService {
             console.log(`priceUSDC_yesterday = ${priceUSDC_yesterday}`)//TODO comment out after testing
 
             if (isFinite(priceUSDC_today) && isFinite(priceUSDC_yesterday)){
-              let change_24hour = ((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday * 100).toFixed(2);
+              //calculating the precentage change between now and yesteday. I did not multiply by 100 since the utils 
+              //method we have already does that.
+              //let change_24hour = ((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday * 100).toFixed(2);
+              let change_24hour = formatPercentageChange((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday);
               console.log(`change_24hour = ${change_24hour}`)//TODO comment out after testing
 
               priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
@@ -162,17 +165,23 @@ export class MillionStatsService {
               throw new Error('Price is not Finite');
               
             }
+            
           
           } catch (error) {
             throw new Error('Error parsing price from api into float');
           }
+          
 
         })
+
+      return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
     }
     
 
       getData()
-      
+
+      //if we got here it means the getData()method above did not reach the return new ServiceResponse(priceData); call
+      return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
     
     } catch (error) {
       return new ServiceResponse(null, true, error);

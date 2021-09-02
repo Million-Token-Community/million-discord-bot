@@ -78,86 +78,69 @@ export class MillionStatsService {
       return new ServiceResponse(null, true, error);
     }
   }
-
+  //@ts-ignore 
   static async getPriceData(): Promise<ServiceResponse<PriceDataMM>> {
     try {
-      const cacheKey = 'priceData';
-      const hasCachedData = await cache.has(cacheKey);
+     
       let priceData: PriceDataMM;
-      let isValidNumber: boolean;
-
-      if (hasCachedData) {
-        priceData = await cache.get(cacheKey) as PriceDataMM;
-        const isPriceDataMM = priceData instanceof PriceDataMM;
-        const isValidPriceFormat = PriceDataMM
-          .priceRegex
-          .test(priceData.price);
-
-        const isValidPriceChangeFormat = PriceDataMM
-          .priceChangeRegex
-          .test(priceData.priceChange);
-
-        const isValidCacheData = isPriceDataMM 
-          && isValidPriceFormat 
-          && isValidPriceChangeFormat;
-
-        if (!isValidCacheData) {
-          throw new Error(`${cacheKey} cache value is invalid`);
+      const apiUrl_graphQL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
+      const query = `
+      {
+        pool(
+          id:"0x84383fb05f610222430f69727aa638f8fdbf5cc1")
+        {
+          
+          poolDayData(orderBy:date, orderDirection:desc,first : 2){
+            date
+            volumeUSD
+            token0Price
+            token1Price
+          }
         }
-
-        return new ServiceResponse(priceData);
       }
+      `
+      const init_graphQL: RequestInit = {
+        method: 'POST',
+        body: JSON.stringify({ query }),
+      };
 
-      const apiUrl = `https://api.nomics.com/v1/currencies/ticker?key=${process.env.NOMICS_API_TOKEN}&ids=MM4`;
-      const init: RequestInit = {
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-        },
-      }
-      
-      const apiResponse = await fetch(apiUrl, init);
-      const contentType = apiResponse.headers.get('Content-type');
-      const isValdJSON = hasJsonContentType(contentType);
-    
-      if (!isValdJSON) {
-        throw new Error('fetch response should return JSON');
-      }
-
-      const apiResponseBody = await apiResponse.json();
-      const apiPriceData = apiResponseBody?.[0];
-
-      if (apiPriceData === undefined) {
+      const resp = await fetch(apiUrl_graphQL, init_graphQL);
+      const json = await resp.json();
+      const data = await json.data;
+      if (data === undefined) {
         throw new Error('Invalid API response');
       }
 
-      const priceChangeRaw = apiPriceData
-        ?.['1d']
-        ?.price_change_pct as string;
+      try {
+        let priceUSDC_today = parseFloat(data.pool.poolDayData[0].token1Price);//price today
+        let priceUSDC_yesterday = parseFloat(data.pool.poolDayData[1].token1Price);//price yesterday
+        
+        if (isFinite(priceUSDC_today) && isFinite(priceUSDC_yesterday)){
+          //calculating the precentage change between now and yesteday. I did not multiply by 100 
+          //to get percentage since the method we have already does that.
+          let change_24hour = formatPercentageChange((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday);
+          priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
+         
+          return new ServiceResponse(priceData);
 
-      const priceChangeFloat = parseFloat(priceChangeRaw);
-      isValidNumber = isFinite(priceChangeFloat);
-
-      if (!isValidNumber) {
-        throw new Error(`priceChangeFloat is not a finite number`);
-      }
-
-      const priceChange = formatPercentageChange(priceChangeFloat);
-
-      const priceRaw = apiPriceData?.price as string;      
-      const priceFloat = parseFloat(priceRaw);
-      isValidNumber = isFinite(priceFloat);
-
-      if (!isValidNumber) {
+        } else {
+          throw new Error('Price is not Finite');
+          
+        }
+      
+      } catch (error) {
         throw new Error('Error parsing price from api into float');
       }
+      
 
-      const price = priceFloat.toFixed(2);
-      priceData = new PriceDataMM(price, priceChange);
-      cache.set(cacheKey, priceData);
-
-      return new ServiceResponse(priceData);
+     
+    
+    
     } catch (error) {
       return new ServiceResponse(null, true, error);
     }
+
   }
+
+
 }

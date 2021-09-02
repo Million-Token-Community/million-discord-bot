@@ -135,7 +135,7 @@ export class MillionStatsService {
 
       //const getData = async () => {
         const { body } = await fetch(apiUrl_graphQL, init_graphQL);
-        body.on('data', data => {
+        await body.on('data', data => {
           if (data === undefined) {
             throw new Error('Invalid API response');
           }

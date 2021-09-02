@@ -19,9 +19,7 @@ module.exports = class HelloCommand extends SlashCommand {
       //const resp = await MillionStatsService.getPriceData();
       const resp = await new MillionStatsService().getPriceData_2();
 
-      console.log(`1`)//TODO comment out after testing
       if (resp.hasError) throw resp.error;
-      console.log(`2`)//TODO comment out after testing
 
       const {price, priceChange} = resp.data;
       commandResponse = `<:mm:861734660081451018> Price is **$${price}** (${priceChange}%).`;

@@ -83,6 +83,7 @@ export class SocialStatusDisplay {
 
   async getPrice(): Promise<void> {
     try {
+      console.log('getPrice()');//TODO remove after testing
       const resp = await MillionStatsService.getPriceData();
 
       if (resp.hasError) throw resp.error;

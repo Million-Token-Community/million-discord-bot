@@ -79,6 +79,7 @@ export class MillionStatsService {
     }
   }
 
+  /*
  //@ts-ignore 
   static async getPriceData(): Promise<ServiceResponse<PriceDataMM>> {
     try {
@@ -111,7 +112,7 @@ export class MillionStatsService {
 
 
 
-      /**  -------------------------  */
+      
       const apiUrl_graphQL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
       const query = `
       {
@@ -196,11 +197,12 @@ export class MillionStatsService {
     //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
   }
 
-
+*/
 
   //@ts-ignore 
   async getPriceData_2(): Promise<ServiceResponse<PriceDataMM>> {
     try {
+      /*
       const cacheKey = 'priceData';
       const hasCachedData = await cache.has(cacheKey);
       let priceData: PriceDataMM;
@@ -227,10 +229,11 @@ export class MillionStatsService {
 
         return new ServiceResponse(priceData);
       }
-
+*/
 
 
       /**  -------------------------  */
+      let priceData: PriceDataMM;
       const apiUrl_graphQL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
       const query = `
       {
@@ -263,8 +266,8 @@ export class MillionStatsService {
       try {
         //const json = JSON.parse(data);
         console.log(json)//TODO comment out after testing
-        let priceUSDC_today = parseFloat(json.data.pool.poolDayData[0].token1Price);//price today
-        let priceUSDC_yesterday = parseFloat(json.data.pool.poolDayData[1].token1Price);//price yesterday
+        let priceUSDC_today = parseFloat(data.pool.poolDayData[0].token1Price);//price today
+        let priceUSDC_yesterday = parseFloat(data.pool.poolDayData[1].token1Price);//price yesterday
         console.log(`priceUSDC_today = ${priceUSDC_today}`)//TODO comment out after testing
         console.log(`priceUSDC_yesterday = ${priceUSDC_yesterday}`)//TODO comment out after testing
 
@@ -280,7 +283,7 @@ export class MillionStatsService {
           console.log(`priceData = ${priceData}`)//TODO comment out after testing
           console.log(`priceData.price = ${priceData.price}`)//TODO comment out after testing
           console.log(`priceData.priceChange = ${priceData.priceChange}`)//TODO comment out after testing
-          cache.set(cacheKey, priceData);
+          //cache.set(cacheKey, priceData);
           console.log(`after setting cache`)//TODO comment out after testing
 
           return new ServiceResponse(priceData);
@@ -293,6 +296,7 @@ export class MillionStatsService {
       } catch (error) {
         throw new Error('Error parsing price from api into float');
       }
+      
 
       /*
       //const getData = async () => {
@@ -345,16 +349,12 @@ export class MillionStatsService {
 
       //getData()
 
-      console.log(`after getData()`)//TODO comment out after testing
-      //if we got here it means the getData()method above did not reach the return new ServiceResponse(priceData); call
-      //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
-      //return new ServiceResponse(priceData);
+    
     
     } catch (error) {
       return new ServiceResponse(null, true, error);
     }
 
-    //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
   }
 
 

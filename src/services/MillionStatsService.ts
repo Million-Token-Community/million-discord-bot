@@ -175,7 +175,7 @@ export class MillionStatsService {
 
         })
 
-      return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
+      //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
     }
     
 

@@ -158,6 +158,8 @@ export class MillionStatsService {
 
               priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
               console.log(`priceData = ${priceData}`)//TODO comment out after testing
+              console.log(`priceData.price = ${priceData.price}`)//TODO comment out after testing
+              console.log(`priceData.priceChange = ${priceData.priceChange}`)//TODO comment out after testing
               cache.set(cacheKey, priceData);
               console.log(`after setting cache`)//TODO comment out after testing
 

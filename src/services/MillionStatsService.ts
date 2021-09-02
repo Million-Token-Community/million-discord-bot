@@ -254,7 +254,45 @@ export class MillionStatsService {
 
       const resp = await fetch(apiUrl_graphQL, init_graphQL);
       const json = await resp.json();
-      console.log(json);
+      const data = await json.data;
+      console.log(data);//TODO remove after testing
+      if (data === undefined) {
+        throw new Error('Invalid API response');
+      }
+
+      try {
+        const json = JSON.parse(data);
+        console.log(json)//TODO comment out after testing
+        let priceUSDC_today = parseFloat(json.data.pool.poolDayData[0].token1Price);//price today
+        let priceUSDC_yesterday = parseFloat(json.data.pool.poolDayData[1].token1Price);//price yesterday
+        console.log(`priceUSDC_today = ${priceUSDC_today}`)//TODO comment out after testing
+        console.log(`priceUSDC_yesterday = ${priceUSDC_yesterday}`)//TODO comment out after testing
+
+        if (isFinite(priceUSDC_today) && isFinite(priceUSDC_yesterday)){
+          //calculating the precentage change between now and yesteday. I did not multiply by 100 since the utils 
+          //method we have already does that.
+          //let change_24hour = ((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday * 100).toFixed(2);
+          let change_24hour = formatPercentageChange((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday);
+          console.log(`change_24hour = ${change_24hour}`)//TODO comment out after testing
+          console.log(`priceUSDC_today.toFixed(2) = ${priceUSDC_today.toFixed(2)}`)//TODO comment out after testing
+
+          priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
+          console.log(`priceData = ${priceData}`)//TODO comment out after testing
+          console.log(`priceData.price = ${priceData.price}`)//TODO comment out after testing
+          console.log(`priceData.priceChange = ${priceData.priceChange}`)//TODO comment out after testing
+          cache.set(cacheKey, priceData);
+          console.log(`after setting cache`)//TODO comment out after testing
+
+          return new ServiceResponse(priceData);
+
+        } else {
+          throw new Error('Price is not Finite');
+          
+        }
+      
+      } catch (error) {
+        throw new Error('Error parsing price from api into float');
+      }
 
       /*
       //const getData = async () => {

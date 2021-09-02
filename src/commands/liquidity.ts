@@ -99,8 +99,8 @@ module.exports = class HelloCommand extends SlashCommand {
           const json = JSON.parse(data)
           //console.log(json)
           let volumeUSD_value = json.data.pool.poolDayData[0].volumeUSD;
-          let priceMM = json.data.pool.poolDayData[0].token0Price;
-          let priceUSDC = json.data.pool.poolDayData[0].token1Price;//could be eth in case of other pool
+          let priceMM = parseFloat(json.data.pool.poolDayData[0].token0Price);
+          let priceUSDC = parseFloat(json.data.pool.poolDayData[0].token1Price);//could be eth in case of other pool
           let tvl_MM = json.data.pool.totalValueLockedToken0;
           let tvl_USDC = json.data.pool.totalValueLockedToken1;//could be eth in case of other pool
 
@@ -111,6 +111,7 @@ module.exports = class HelloCommand extends SlashCommand {
             .setThumbnail('https://imgur.com/NCcqu3m.png')
             .setTitle(`${currentSubCommandDesc}`)
             .setURL(`https://info.uniswap.org/#/pools/${poolId}`)
+            /*
             .addFields(
                 { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, Inline: true },
                 //{ name: '\u200B', value: '\u200B', Inline: false },
@@ -125,6 +126,21 @@ module.exports = class HelloCommand extends SlashCommand {
             .addField('MM', `${formatLargeNumber(tvl_MM)}`, true)
             .addField(`${token1Name}`, `${formatLargeNumber(tvl_USDC)}`, true)
             .addField('Locked!', `\u200B`, true)
+            */
+           .addFields(
+            { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, Inline: true },
+            { name: '\u200B', value: '\u200B', Inline: false },
+            { name: `MM Price:`, value: `${priceUSDC.toFixed(2)} ${token1Name}`, Inline: true },
+            { name: `${token1Name} Price:`, value: `${priceMM.toFixed(4)} MM`, Inline: true },
+        )
+        //.addField(`Today's Volume:`, `${formatLargeNumber(volumeUSD_value)}`, false)
+        //.addField(`1 MM =`, `${formatLargeNumber(priceUSDC)} ${token1Name}`, false)
+        //.addField(`1 ${token1Name} =`, `${formatLargeNumber(priceMM)} MM`, false)
+        //.addField('\u200B','\u200B', false)
+        //.addField('Tokens Locked:', `\u200B`, false)
+        .addField('MM', `${formatLargeNumber(tvl_MM)}`, true)
+        .addField(`${token1Name}`, `${formatLargeNumber(tvl_USDC)}`, true)
+        .addField('Locked!', `\u200B`, true)
 
 
           //console.log(exampleEmbed)

@@ -190,6 +190,7 @@ export class MillionStatsService {
       //return new ServiceResponse(priceData);
     
     } catch (error) {
+      console.log(`catch (error)`)//TODO comment out after testing
       return new ServiceResponse(null, true, error);
     }
   }

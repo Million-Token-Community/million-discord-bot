@@ -134,6 +134,8 @@ export class MillionStatsService {
 
       //const getData = async () => {
         const { body } = await fetch(apiUrl_graphQL, init_graphQL);
+        console.log("body.data")//TODO comment out after testing
+        console.log(body.data)//TODO comment out after testing
         body.on('data', data => {
           if (data === undefined) {
             throw new Error('Invalid API response');
@@ -169,7 +171,6 @@ export class MillionStatsService {
               throw new Error('Price is not Finite');
               
             }
-            
           
           } catch (error) {
             throw new Error('Error parsing price from api into float');
@@ -186,11 +187,10 @@ export class MillionStatsService {
 
       console.log(`after getData()`)//TODO comment out after testing
       //if we got here it means the getData()method above did not reach the return new ServiceResponse(priceData); call
-      return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
-      //return new ServiceResponse(priceData);
+      //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
+      return new ServiceResponse(priceData);
     
     } catch (error) {
-      console.log(`catch (error)`)//TODO comment out after testing
       return new ServiceResponse(null, true, error);
     }
   }

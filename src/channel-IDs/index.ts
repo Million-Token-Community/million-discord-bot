@@ -6,5 +6,6 @@ export const channelIds = {
   redditStats: '882029588769832960',
   emailSubsChannel: '882029588769832962',
   holdersChannel: '882029588585259035',
-  price: '882029588585259034'
+  price: '882029588585259034',
+  telegramCount: '882029588585259037',
 }

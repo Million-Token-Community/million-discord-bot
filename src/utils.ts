@@ -1,3 +1,5 @@
+import {Response} from 'node-fetch';
+
 export function formatLargeNumber(number: number) {
   const num = Math.abs(Number(number));
   return num >= 1.0e+9
@@ -13,9 +15,13 @@ export function formatPercentageChange(number: number) {
   return `${(number > 0 ? '+' : '')}${(number * 100).toFixed(2)}`;
 }
 
-export function hasJsonContentType(contentType: string): boolean {
-  const isString = typeof contentType === 'string';
+export function hasJsonContentType(resp: Response): boolean {
+  if (!(resp instanceof Response)) {
+    return false;
+  }
+
+  const contentType = resp.headers.get('Content-Type');
   const hasJSON = contentType.includes('application/json');
   
-  return isString && hasJSON;
+  return hasJSON;
 }

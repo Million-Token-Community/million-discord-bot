@@ -6,7 +6,7 @@ export function formatLargeNumber(number: number) {
       ? (num / 1.0e+6).toFixed(2) + "M"
       : num >= 1.0e+3
         ? (num / 1.0e+3).toFixed(2) + "K"
-        : num;
+        : num.toFixed(2);
 }
 
 export function formatPercentageChange(number: number) {

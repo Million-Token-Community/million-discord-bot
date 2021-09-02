@@ -132,7 +132,7 @@ export class MillionStatsService {
         body: JSON.stringify({ query }),
       };
 
-      const getData = async () => {
+      //const getData = async () => {
         const { body } = await fetch(apiUrl_graphQL, init_graphQL);
         body.on('data', data => {
           if (data === undefined) {
@@ -154,6 +154,7 @@ export class MillionStatsService {
               //let change_24hour = ((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday * 100).toFixed(2);
               let change_24hour = formatPercentageChange((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday);
               console.log(`change_24hour = ${change_24hour}`)//TODO comment out after testing
+              console.log(`priceUSDC_today.toFixed(2) = ${priceUSDC_today.toFixed(2)}`)//TODO comment out after testing
 
               priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
               console.log(`priceData = ${priceData}`)//TODO comment out after testing
@@ -176,15 +177,15 @@ export class MillionStatsService {
         })
 
       //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
-    }
+    //}
     
 
-      getData()
+      //getData()
 
       console.log(`after getData()`)//TODO comment out after testing
       //if we got here it means the getData()method above did not reach the return new ServiceResponse(priceData); call
-      //return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
-      return new ServiceResponse(priceData);
+      return new ServiceResponse(null, true, new Error('Error getting price from Uniswap'));
+      //return new ServiceResponse(priceData);
     
     } catch (error) {
       return new ServiceResponse(null, true, error);

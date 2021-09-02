@@ -261,7 +261,7 @@ export class MillionStatsService {
       }
 
       try {
-        const json = JSON.parse(data);
+        //const json = JSON.parse(data);
         console.log(json)//TODO comment out after testing
         let priceUSDC_today = parseFloat(json.data.pool.poolDayData[0].token1Price);//price today
         let priceUSDC_yesterday = parseFloat(json.data.pool.poolDayData[1].token1Price);//price yesterday

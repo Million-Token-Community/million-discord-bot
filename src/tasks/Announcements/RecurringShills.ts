@@ -1,8 +1,9 @@
 import {Client, TextChannel} from 'discord.js';
 import {cache} from '../../cache';
-import {ShillMessageDataService} from '../../services/ShillMessageDataService';
+import {ShillMessage, ShillMessageDataService} from '../../services/ShillMessageDataService';
 import {random as randomInt} from 'lodash';
 import {channelIds} from '../../channel-IDs';
+import {ShillMessageAddon} from '../../services/ShillMessageAddon';
 
 export class RecurringShills {
   private client: Client;
@@ -32,12 +33,11 @@ export class RecurringShills {
     this.timer = setInterval(this.action.bind(this), this.minutes * 60 * 1000);
   }
 
-  async getShills(): Promise<string[]> {
+  async getShills(): Promise<ShillMessage[]> {
     const records = await ShillMessageDataService.getAllShillMessages();
-    const shills = records.map(entry => entry.content);
-    await cache.set('shill_messages', shills, 0);
+    await cache.set('shill_messages', records, 0);
     
-    return shills;
+    return records;
   }
 
   async randomizeShillOrder(): Promise<void> {
@@ -68,7 +68,7 @@ export class RecurringShills {
         throw 'Could not find channel with ID: ' + this.channelId;
       }
 
-      const shills = await cache.get('shill_messages') as string[];
+      const shills = await cache.get('shill_messages') as ShillMessage[];
       const isValidShillArray = Array.isArray(shills);
 
       if (!isValidShillArray) {
@@ -76,13 +76,20 @@ export class RecurringShills {
       };
 
       const index = this.shillOrder.pop();
-      const shillMessage = shills?.[index];
-      const isValidShillMessage = typeof shillMessage === 'string';
+      const shillMessage = shills[index];
+      const isValidShillMessage = typeof shillMessage.content === 'string';
 
       if (isValidShillMessage) {
-        await channel.send(shillMessage);
+        const hasAddon = ShillMessageAddon.hasAddon(shillMessage.name);
+
+        if (hasAddon) {
+          const addon = await ShillMessageAddon[shillMessage.name]();
+          shillMessage.content = shillMessage.content + '\n\n' + addon;
+        }
+        
+        await channel.send(shillMessage.content);
       } else {
-        throw 'Shill message should be a string';
+        throw 'Shill message content should be a string';
       };
 
       if (this.shillOrder.length === 0) {

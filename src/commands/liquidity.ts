@@ -37,7 +37,7 @@ module.exports = class HelloCommand extends SlashCommand {
   async run(ctx) {
 
     var currentSubCommandName = '';
-    var currentSubCommandDesc = '';//todo define this in a static string later.
+    var currentSubCommandDesc = '';
     var token1Name = '';
     var poolId = '0x84383fb05f610222430f69727aa638f8fdbf5cc1';//USDC MM 1% Pool as default
     
@@ -99,11 +99,13 @@ module.exports = class HelloCommand extends SlashCommand {
           const json = JSON.parse(data)
           //console.log(json)
           let volumeUSD_value = json.data.pool.poolDayData[0].volumeUSD;
-          let priceMM = json.data.pool.poolDayData[0].token0Price;
-          let priceUSDC = json.data.pool.poolDayData[0].token1Price;//could be eth in case of other pool
+          let priceMM = parseFloat(json.data.pool.poolDayData[0].token0Price);
+          let priceUSDC = parseFloat(json.data.pool.poolDayData[0].token1Price);//could be eth in case of other pool
           let tvl_MM = json.data.pool.totalValueLockedToken0;
           let tvl_USDC = json.data.pool.totalValueLockedToken1;//could be eth in case of other pool
-
+          //when dealing with eth price, its so low it needs 4 digits after the dot.
+          let decemals_token0 = priceUSDC >= 1 ? 2 : 4;
+          let decemals_token1 = priceMM >= 1 ? 2 : 4;
 
 
           const exampleEmbed = new Discord.MessageEmbed()
@@ -111,23 +113,17 @@ module.exports = class HelloCommand extends SlashCommand {
             .setThumbnail('https://imgur.com/NCcqu3m.png')
             .setTitle(`${currentSubCommandDesc}`)
             .setURL(`https://info.uniswap.org/#/pools/${poolId}`)
-            .addFields(
-                { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, Inline: true },
-                //{ name: '\u200B', value: '\u200B', Inline: false },
-                { name: `1 MM:`, value: `${formatLargeNumber(priceUSDC)} ${token1Name}`, Inline: true },
-                { name: `1 ${token1Name}:`, value: `${formatLargeNumber(priceMM)} MM`, Inline: true },
-            )
-            //.addField(`Today's Volume:`, `${formatLargeNumber(volumeUSD_value)}`, false)
-            //.addField(`1 MM =`, `${formatLargeNumber(priceUSDC)} ${token1Name}`, false)
-            //.addField(`1 ${token1Name} =`, `${formatLargeNumber(priceMM)} MM`, false)
-            //.addField('\u200B','\u200B', false)
-            //.addField('Tokens Locked:', `\u200B`, false)
-            .addField('MM', `${formatLargeNumber(tvl_MM)}`, true)
-            .addField(`${token1Name}`, `${formatLargeNumber(tvl_USDC)}`, true)
-            .addField('Locked!', `\u200B`, true)
+           .addFields(
+            { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, Inline: true },
+            //{ name: '\u200B', value: '\u200B', Inline: false },
+            { name: `MM Price:`, value: `${priceUSDC.toFixed(decemals_token0)} ${token1Name}`, Inline: false },
+            { name: `${token1Name} Price:`, value: `${priceMM.toFixed(decemals_token1)} MM`, Inline: false },
+        )
+        //.addField('\u200B','\u200B', false)
+        .addField('Locked\nMM', `${formatLargeNumber(tvl_MM)}`, true)
+        .addField(`Tokens\n${token1Name}`, `${formatLargeNumber(tvl_USDC)}`, true)
 
 
-          //console.log(exampleEmbed)
           ctx.send({ embeds: [exampleEmbed] });
         })
       }

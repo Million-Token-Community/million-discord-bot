@@ -16,9 +16,8 @@ export class TelegramService {
       } 
 
       const resp = await nodeFetch(url, fetchOptns);
-      const contentType = resp.headers.get('Content-Type');
       const isRespOk = resp.ok;
-      const hasJson = hasJsonContentType(contentType);
+      const hasJson = hasJsonContentType(resp);
       const isValidResponse = isRespOk && hasJson;
       
       if (!isValidResponse) {
@@ -35,7 +34,7 @@ export class TelegramService {
       
       return new ServiceResponse(memberCount);
     } catch (error) {
-      return new ServiceResponse(null, true, error);
+      return new ServiceResponse(null, error);
     }
   }
 }

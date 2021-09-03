@@ -37,12 +37,8 @@ export class MillionStatsService {
         fetch(covalentUrl, init),
       ]);
 
-      const ethContentType = ethExplorerResp.headers.get('Content-type');
-      const isEthContentJSON = hasJsonContentType(ethContentType);
-
-      const covalentContentType = covalentResp.headers.get('Content-type');
-      const isCovalentContentJSON = hasJsonContentType(covalentContentType);
-
+      const isEthContentJSON = hasJsonContentType(ethExplorerResp);
+      const isCovalentContentJSON = hasJsonContentType(covalentResp);
       const isValidJSON = isEthContentJSON && isCovalentContentJSON;
 
       if (!isValidJSON) throw new Error ('API responses should return JSON');
@@ -75,7 +71,7 @@ export class MillionStatsService {
 
       return new ServiceResponse(holders);  
     } catch (error) {
-      return new ServiceResponse(null, true, error);
+      return new ServiceResponse(null, error);
     }
   }
   //@ts-ignore 
@@ -108,7 +104,6 @@ export class MillionStatsService {
         return new ServiceResponse(priceData);
       }
      
-      
       const apiUrl_graphQL = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
       const query = `
       {
@@ -163,7 +158,7 @@ export class MillionStatsService {
     
     
     } catch (error) {
-      return new ServiceResponse(null, true, error);
+      return new ServiceResponse(null, error);
     }
 
   }

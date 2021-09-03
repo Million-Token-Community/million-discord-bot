@@ -59,6 +59,8 @@ export class RecurringShills {
 
   async action(): Promise<void> {
     try {
+      let content: string;
+
       const channel = await this.client
         .channels
         .fetch(this.channelId) as TextChannel;
@@ -79,18 +81,20 @@ export class RecurringShills {
       const shillMessage = shills[index];
       const isValidShillMessage = typeof shillMessage.content === 'string';
 
-      if (isValidShillMessage) {
-        const hasAddon = ShillMessageAddon.hasAddon(shillMessage.name);
+      if (!isValidShillMessage) {
+        throw new Error('Shill message content should be a string');
+      }
+      
+      const hasAddon = ShillMessageAddon.hasAddon(shillMessage.name);
 
-        if (hasAddon) {
-          const addon = await ShillMessageAddon[shillMessage.name]();
-          shillMessage.content = shillMessage.content + '\n\n' + addon;
-        }
-        
-        await channel.send(shillMessage.content);
+      if (hasAddon) {
+        const modifiedContent = await ShillMessageAddon[shillMessage.name](shillMessage.content);
+        content = modifiedContent;
       } else {
-        throw 'Shill message content should be a string';
-      };
+        content = shillMessage.content;
+      }
+        
+      await channel.send(content);
 
       if (this.shillOrder.length === 0) {
         await this.randomizeShillOrder();

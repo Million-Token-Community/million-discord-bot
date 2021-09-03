@@ -16,7 +16,11 @@ export class ShillMessageAddon {
     return typeof ShillMessageAddon[name] === 'function';
   }
   
-  static async ['CoinMarketCap'](): Promise<string>  {
+  static async ['CoinMarketCap'](content: string): Promise<string>  {
+    if (typeof content !== 'string') {
+      throw new Error('content must be a string');
+    }
+
     const resp = await nodeFetch(this.cmcUrl, this.defaultFetchOptions);
     const hasJson = hasJsonContentType(resp);
 
@@ -43,12 +47,18 @@ export class ShillMessageAddon {
 
     const good =  (goodPercent * 100).toFixed(2);
     const bad = (badPercent * 100).toFixed(2);
-    const message = `Current sentiment: 👍 **${good}%**    👎 **${bad}%**`;
 
-    return message;
+    const rating = `👍**${good}%**    👎**${bad}%**`;
+    const newContent = content.replace('<rating>', rating);
+
+    return newContent;
   }
 
-  static async ['CoinGecko'](): Promise<string>  {
+  static async ['CoinGecko'](content: string): Promise<string>  {
+    if (typeof content !== 'string') {
+      throw new Error('content must be a string');
+    }
+    
     const resp = await nodeFetch(this.coinGeckoUrl, this.defaultFetchOptions);
     const hasJson = hasJsonContentType(resp);
 
@@ -72,10 +82,12 @@ export class ShillMessageAddon {
       throw new Error('Invalid CointMarketCap response');
     }
 
-    const message = `Current sentiment: 👍 **${good}%**    👎 **${bad}%**`;
+    const rating = `👍**${good}%**    👎**${bad}%**`;
+    const newContent = content.replace('<rating>', rating);
 
-    return message;
+    return newContent;
   }
+
 }
 
 

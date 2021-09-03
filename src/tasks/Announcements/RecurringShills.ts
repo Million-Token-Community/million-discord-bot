@@ -1,69 +1,114 @@
 import {Client, TextChannel} from 'discord.js';
-import {randomInt} from '../../utils';
 import {cache} from '../../cache';
-import {ShillMessageDataService} from '../../services/ShillMessageDataService';
+import {ShillMessage, ShillMessageDataService} from '../../services/ShillMessageDataService';
+import {random as randomInt} from 'lodash';
+import {channelIds} from '../../channel-IDs';
+import {ShillMessageAddon} from '../../services/ShillMessageAddon';
 
 export class RecurringShills {
+  private client: Client;
+  private channelId = channelIds.lounge;
+  private minutes = 15; 
   private shillOrder: number[] = [];
-  timer: NodeJS.Timeout;
+  private timer: NodeJS.Timeout;
 
-  constructor(
-    private client: Client,
-    private channelId: string,
-    private minutes: number, 
-    ) {
-    this.start();
+  constructor() {
+    // 
   }
 
-  async getShills(): Promise<string[]> {
-    const records = await ShillMessageDataService.getAllShillMessages();
-    const messages = records.map(entry => entry.content);
-    await cache.set('shill_messages', messages, 0);
-    return messages;
-  }
+  async start(client?: Client): Promise<void> {
+    const isClientSet = this.client instanceof Client;
+    const isValidClientArg = client instanceof Client;
 
-  async randomizeShillOrder(): Promise<void> {
-    const shills = await this.getShills();
-    const freqHash = {};
-    const numShills = shills.length;
-
-    while (numShills && this.shillOrder.length < numShills) {
-      const index = randomInt(numShills - 1);
-
-      if (freqHash[index]) continue;
-
-      freqHash[index] = true;
-      this.shillOrder.push(index);
-    }
-  }
-
-  async start(): Promise<void> {
+    if (!isClientSet) {
+      if (isValidClientArg) {
+        this.client = client;
+      } else {
+        throw 'client has not been set and must be a Discord Client';
+      }
+    } 
+    
     await this.randomizeShillOrder();
     await this.action();
     this.timer = setInterval(this.action.bind(this), this.minutes * 60 * 1000);
   }
 
-  async action(): Promise<void> {
-    console.log('sending message');
-
-    try {
-      const shills = await cache.get('shill_messages');
-      const channel = await this.client.channels.fetch(this.channelId) as TextChannel;
+  async getShills(): Promise<ShillMessage[]> {
+    const records = await ShillMessageDataService.getAllShillMessages();
+    await cache.set('shill_messages', records, 0);
     
-      if (!channel) {
-        throw 'Could not find channel with ID' + this.channelId;
+    return records;
+  }
+
+  async randomizeShillOrder(): Promise<void> {
+    const shills = await this.getShills();
+    const shillCount = shills.length;
+    const hasShills = shillCount > 0;
+    const freqHash = {};
+
+    while (hasShills && this.shillOrder.length < shillCount) {
+      const randomIndex = randomInt(shillCount - 1);
+      const hasIndex = typeof freqHash[randomIndex] === 'boolean';
+
+      if (hasIndex) continue;
+
+      freqHash[randomIndex] = true;
+      this.shillOrder.push(randomIndex);
+    }
+  }
+
+  async action(): Promise<void> {
+    try {
+      let content: string;
+
+      const channel = await this.client
+        .channels
+        .fetch(this.channelId) as TextChannel;
+      const hasChannel = channel instanceof TextChannel;
+    
+      if (!hasChannel) {
+        throw 'Could not find channel with ID: ' + this.channelId;
       }
-      
+
+      const shills = await cache.get('shill_messages') as ShillMessage[];
+      const isValidShillArray = Array.isArray(shills);
+
+      if (!isValidShillArray) {
+        throw 'shill_messages in cache should be an array of strings';
+      };
+
       const index = this.shillOrder.pop();
       const shillMessage = shills[index];
+      const isValidShillMessage = typeof shillMessage.content === 'string';
 
-      if (shillMessage) await channel.send(shillMessage);
+      if (!isValidShillMessage) {
+        throw new Error('Shill message content should be a string');
+      }
+      
+      const hasAddon = ShillMessageAddon.hasAddon(shillMessage.name);
+
+      if (hasAddon) {
+        const modifiedContent = await ShillMessageAddon[shillMessage.name](shillMessage.content);
+        content = modifiedContent;
+      } else {
+        content = shillMessage.content;
+      }
+        
+      await channel.send(content);
 
       if (this.shillOrder.length === 0) {
         await this.randomizeShillOrder();
       }
     } catch (error) {
-      console.log('Error creating announcement:', error);
+      console.log('Error creating announcement:\n', error);
     }
   }
+
+  async reset(): Promise<void> {
+    clearInterval(this.timer);
+    this.shillOrder = [];
+    await this.start();
+  }
 }
+
+export const recuringShills = new RecurringShills();

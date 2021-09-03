@@ -1,6 +1,5 @@
 import {Client} from 'discord.js';
-import {RecurringShills} from './RecurringShills';
-import {channelIds} from '../../channel-IDs'
+import {recuringShills} from './RecurringShills';
 
 export class Announcements {  
   constructor(private client: Client) {
@@ -9,10 +8,6 @@ export class Announcements {
 
   // shills
   createAnnouncements(): void {
-    new RecurringShills(
-      this.client, 
-      channelIds.lounge,  
-      5
-    );
+    recuringShills.start(this.client);
   }
 }

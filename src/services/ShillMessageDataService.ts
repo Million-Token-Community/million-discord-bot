@@ -2,6 +2,7 @@ import * as Airtable from 'airtable';
 import {FieldSet} from 'airtable/lib/field_set';
 import {QueryParams} from 'airtable/lib/query_params';
 import Record from 'airtable/lib/record';
+import {ShillMessageAddon} from './ShillMessageAddon';
 
 export interface ShillMessage {
   id: string;
@@ -31,17 +32,18 @@ export class ShillMessageDataService {
       const content = record.get('content') as string;
       const expiry = record.get('expiry') as string;
       const currentDate = Date.now();
+
       let expiredDate = Infinity;
 
       if (typeof expiry === 'string') {
         expiredDate = Date.parse(expiry);
       }
 
-      const hasContent = typeof content === 'string';
+      const isValidContent = typeof content === 'string';
       const contentHasExpired = currentDate >= expiredDate;
       
-      if (hasContent && !contentHasExpired) {
-        messages.push(this.shillMessage(record));
+      if (isValidContent && !contentHasExpired) {
+        messages.push(this.formatShillMessage(record));
       }
     });
 
@@ -50,15 +52,29 @@ export class ShillMessageDataService {
 
   static async getShillMessageById(id: string): Promise<ShillMessage> {
     const record = await this.table.find(id);
-    return this.shillMessage(record);
+    return this.formatShillMessage(record);
   }
 
-  static async getMessageByName(name: string): Promise<unknown> {
+  static async getMessageByName(name: string): Promise<ShillMessage | undefined> {
     const records = await this.table
       .select({filterByFormula: `{name} = '${name}'`})
       .firstPage();
 
-    return records[0]?._rawJson;
+    const record = records[0];
+
+    if (typeof record === 'undefined') {
+      return record;
+    }
+
+    const shillMessage = this.formatShillMessage(record);
+    const hasAddon = ShillMessageAddon.hasAddon(shillMessage.name);
+
+    if (hasAddon) {
+      const addon = await ShillMessageAddon[shillMessage.name]();
+      shillMessage.content = shillMessage.content + '\n\n' + addon;
+    }
+
+    return shillMessage;
   }
 
   static async createShillMessage(name: string, content: string): Promise<ShillMessage> {
@@ -71,7 +87,7 @@ export class ShillMessageDataService {
 
     const record = await this.table.create({name, content});
 
-    return this.shillMessage(record);
+    return this.formatShillMessage(record);
   }
 
   static async editShillMessage(
@@ -81,19 +97,30 @@ export class ShillMessageDataService {
       content?: string
   }): Promise<ShillMessage> {
     const record = await this.table.update(id, fields)
-    return this.shillMessage(record);
+    return this.formatShillMessage(record);
   }
 
   static async deleteMessage(id: string): Promise<ShillMessage> {
     const record = await this.table.destroy(id);
-    return this.shillMessage(record);
+    return this.formatShillMessage(record);
   }
 
-  static shillMessage(record: Record<FieldSet>): ShillMessage {
+  static formatShillMessage(record: Record<FieldSet>): ShillMessage {
+    const id = record.getId();
+    const name = record.get('name') as string;
+    const content = record.get('content') as string;
+
+    const isValidFields = typeof name === 'string'
+      && typeof content === 'string';
+
+    if (!isValidFields) {
+      throw new Error('Record contains invalid fields');
+    }
+
     return {
-      id: record.getId(),
-      name: record.get('name') as string,
-      content: record.get('content') as string
+      id,
+      name,
+      content
     }
   }
 }

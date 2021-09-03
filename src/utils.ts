@@ -1,3 +1,5 @@
+import {Response} from 'node-fetch';
+
 export function formatLargeNumber(number: number) {
   const num = Math.abs(Number(number));
   return num >= 1.0e+9
@@ -6,19 +8,20 @@ export function formatLargeNumber(number: number) {
       ? (num / 1.0e+6).toFixed(2) + "M"
       : num >= 1.0e+3
         ? (num / 1.0e+3).toFixed(2) + "K"
-        : num;
+        : num.toFixed(2);
 }
 
 export function formatPercentageChange(number: number) {
   return `${(number > 0 ? '+' : '')}${(number * 100).toFixed(2)}`;
 }
 
-export function randomInt(min: number, max?: number): number {
-  if (!max) {
-    max = min;
-    min = 0;
+export function hasJsonContentType(resp: Response): boolean {
+  if (!(resp instanceof Response)) {
+    return false;
   }
 
-  const num = Math.floor(Math.random() * (max - min + 1) + min);
-  return num
+  const contentType = resp.headers.get('Content-Type');
+  const hasJSON = contentType.includes('application/json');
+  
+  return hasJSON;
 }

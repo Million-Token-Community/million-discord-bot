@@ -58,7 +58,7 @@ export class ShillMessageAddon {
     if (typeof content !== 'string') {
       throw new Error('content must be a string');
     }
-    
+
     const resp = await nodeFetch(this.coinGeckoUrl, this.defaultFetchOptions);
     const hasJson = hasJsonContentType(resp);
 
@@ -87,7 +87,6 @@ export class ShillMessageAddon {
 
     return newContent;
   }
-
 }
 
 

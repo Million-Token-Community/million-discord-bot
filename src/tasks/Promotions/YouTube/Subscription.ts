@@ -1,5 +1,6 @@
 import nodeFetch, { Response } from 'node-fetch';
 import * as FormData from 'form-data';
+import {random as randomInt } from 'lodash';
 import { Channel, DataService } from './DataService';
 
 export class YouTubeSubscription {
@@ -86,7 +87,7 @@ export class YouTubeSubscription {
   static async run(): Promise<void> {
     try {
       const channels = await DataService.getChannels();
-      const random = Math.floor(Math.random() * channels.length);
+      const random = randomInt(channels.length);
       const { channel_id } = channels[random];
       const status = await this.getStatus(channel_id);
 

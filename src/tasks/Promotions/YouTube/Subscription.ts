@@ -87,7 +87,7 @@ export class YouTubeSubscription {
   static async run(): Promise<void> {
     try {
       const channels = await DataService.getChannels();
-      const random = randomInt(channels.length);
+      const random = randomInt(channels.length - 1);
       const { channel_id } = channels[random];
       const status = await this.getStatus(channel_id);
 

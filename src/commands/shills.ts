@@ -3,15 +3,14 @@ import {ShillMessageDataService} from '../services/ShillMessageDataService';
 import {createStatusEmbed, hasAllowedRoles} from '../utils';
 import {roleIds} from '../role-IDs';
 
-const {leadAdmin, admin, leadAmbassador, leadDev} = roleIds;
+const {leadAdmin, admins, leadAmbassador, leadDev} = roleIds;
 
 module.exports = class HelloCommand extends SlashCommand {
   allowedRoles = [
     leadAdmin,
-    admin,
+    admins,
     leadAmbassador,
-    leadDev,
-    '872062467621138481'
+    leadDev
   ]
 
   constructor(creator) {

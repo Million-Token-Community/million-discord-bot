@@ -70,7 +70,7 @@ export class ShillMessageDataService {
     const hasAddon = ShillMessageAddon.hasAddon(shillMessage.name);
 
     if (hasAddon) {
-      const addon = await ShillMessageAddon[shillMessage.name]();
+      const addon = await ShillMessageAddon[shillMessage.name](shillMessage.content);
       shillMessage.content = shillMessage.content + '\n\n' + addon;
     }
 

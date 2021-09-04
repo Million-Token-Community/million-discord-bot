@@ -63,16 +63,10 @@ export class YouTubeSubscription {
       const url = `${pshbUrl}?hub.callback=${callbackUrl}&hub.topic=${topicUrl}${channelId}`;
       const response = await nodeFetch(url);
 
-      if (typeof response !== 'undefined') {
-        response.body.on('data', data => {
-          const str = data.toString();
-          const status = str
-            .replace(/\s+/g, '')
-            .match(/(?<=<dt>State<\/dt><dd>)(.*?)(?=<\/dd>)/gi);
-          if (status != undefined) {
-            return status[0];
-          }
-        })
+      const data = await response.text()
+      const status = data.replace(/\s+/g, '').match(/(?<=<dt>State<\/dt><dd>)(.*?)(?=<\/dd>)/gi);
+      if (status != undefined) {
+        return status[0];
       }
 
     } catch(e) {
@@ -87,7 +81,7 @@ export class YouTubeSubscription {
   static async run(): Promise<void> {
     try {
       const channels = await DataService.getChannels();
-      const random = randomInt(channels.length);
+      const random = randomInt(channels.length - 1);
       const { channel_id } = channels[random];
       const status = await this.getStatus(channel_id);
 
@@ -96,6 +90,8 @@ export class YouTubeSubscription {
           this.sendPshbRequest(channel_id, 'subscribe');
         });
         console.log(`Subscribed for ${channels.length} channels.`);
+      } else {
+        console.log('Subscriptions are up to date.')
       }
 
     } catch(e) {

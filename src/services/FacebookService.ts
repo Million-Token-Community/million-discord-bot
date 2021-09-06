@@ -5,7 +5,7 @@ export class FacebookService {
   static readonly BASE_URL = 'https://graph.facebook.com/v11.0';
   static defaultFetchOptions: RequestInit = {
     headers: {
-      'Authorization': `Bearer ${process.env.Facebook_USER_ACCESS_TOKEN}`
+      'Authorization': `Bearer ${process.env.Facebook_LONG_LIVED_USER_ACCESS_TOKEN}`
     }
   }
 

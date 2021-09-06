@@ -8,5 +8,6 @@ export const devChannelIds = {
   holdersChannel: '875776895566876703',
   price: '881143911404412968',
   telegramCount: '881145014481199144',
-  youTubePromotion: '881126112489508888'
+  youTubePromotion: '881126112489508888',
+  facebook: ''
 }

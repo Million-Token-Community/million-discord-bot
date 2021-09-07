@@ -1,7 +1,7 @@
 import nodeFetch, { Response } from 'node-fetch';
 import * as FormData from 'form-data';
 import {random as randomInt } from 'lodash';
-import { Channel, DataService } from './DataService';
+import { Channel, DataService } from '../../../services/YouTubeSubService';
 
 export class YouTubeSubscription {
   constructor() {
@@ -65,7 +65,7 @@ export class YouTubeSubscription {
 
       const data = await response.text()
       const status = data.replace(/\s+/g, '').match(/(?<=<dt>State<\/dt><dd>)(.*?)(?=<\/dd>)/gi);
-      if (status != undefined) {
+      if (typeof status !== 'undefined') {
         return status[0];
       }
 
@@ -85,7 +85,7 @@ export class YouTubeSubscription {
       const { channel_id } = channels[random];
       const status = await this.getStatus(channel_id);
 
-      if (status !== undefined && status === 'unverified') {
+      if (typeof status !== 'undefined' && status === 'unverified') {
         channels.forEach(({ channel_id }: Channel) => {
           this.sendPshbRequest(channel_id, 'subscribe');
         });

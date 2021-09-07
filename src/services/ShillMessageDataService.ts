@@ -3,6 +3,7 @@ import {FieldSet} from 'airtable/lib/field_set';
 import {QueryParams} from 'airtable/lib/query_params';
 import Record from 'airtable/lib/record';
 import {ShillMessageAddon} from './ShillMessageAddon';
+import Table from 'airtable/lib/table';
 
 export interface ShillMessage {
   id: string;
@@ -10,13 +11,26 @@ export interface ShillMessage {
   content: string;
 }
 
-export class ShillMessageDataService {
-  static readonly table = new Airtable({
-      apiKey: process.env.AIRTABLE_API_KEY
+class _ShillMessageDataService {
+  private table: Table<FieldSet>;
+  
+  constructor() {
+    this.connectTable();
+  }
+
+  async connectTable(): Promise<void> {
+    try {
+    this.table = await new Airtable({
+      apiKey: process.env.AIRTABLE_API_KEY || 'opop'
     })
     .base('apph8Ekdivj4iBcKd')('shill_messages');
+  } catch (error) {
+      console.log('SHILL MESSAGE DATA SERVCE ERROR', error);
+  }
+  }
+  
 
-  static async getAllShillMessages(): Promise<ShillMessage[]> {
+  async getAllShillMessages(): Promise<ShillMessage[]> {
     const messages: ShillMessage[] = [];
 
     const queryParams: QueryParams<FieldSet> = {
@@ -50,12 +64,12 @@ export class ShillMessageDataService {
     return messages;
   }
 
-  static async getShillMessageById(id: string): Promise<ShillMessage> {
+  async getShillMessageById(id: string): Promise<ShillMessage> {
     const record = await this.table.find(id);
     return this.formatShillMessage(record);
   }
 
-  static async getMessageByName(name: string): Promise<ShillMessage | undefined> {
+  async getMessageByName(name: string): Promise<ShillMessage | undefined> {
     const records = await this.table
       .select({filterByFormula: `{name} = '${name}'`})
       .firstPage();
@@ -77,7 +91,7 @@ export class ShillMessageDataService {
     return shillMessage;
   }
 
-  static async createShillMessage(name: string, content: string): Promise<ShillMessage> {
+  async createShillMessage(name: string, content: string): Promise<ShillMessage> {
     const exists = await this.getMessageByName(name);
 
     if (exists) throw {
@@ -90,7 +104,7 @@ export class ShillMessageDataService {
     return this.formatShillMessage(record);
   }
 
-  static async editShillMessage(
+  async editShillMessage(
     id: string, 
     fields: {
       name?: string, 
@@ -100,12 +114,12 @@ export class ShillMessageDataService {
     return this.formatShillMessage(record);
   }
 
-  static async deleteMessage(id: string): Promise<ShillMessage> {
+  async deleteMessage(id: string): Promise<ShillMessage> {
     const record = await this.table.destroy(id);
     return this.formatShillMessage(record);
   }
 
-  static formatShillMessage(record: Record<FieldSet>): ShillMessage {
+  formatShillMessage(record: Record<FieldSet>): ShillMessage {
     const id = record.getId();
     const name = record.get('name') as string;
     const content = record.get('content') as string;
@@ -124,3 +138,5 @@ export class ShillMessageDataService {
     }
   }
 }
+
+export const ShillMessageDataService = new _ShillMessageDataService();

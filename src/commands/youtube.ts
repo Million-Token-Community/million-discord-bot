@@ -1,6 +1,6 @@
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, MessageEmbedOptions } from 'slash-create';
 import { YouTubeSubscription } from '../tasks/Promotions/YouTube/Subscription';
-import { DataService } from '../tasks/Promotions/YouTube/DataService';
+import { DataService } from '../services/YouTubeSubService';
 import { roleIds } from '../role-IDs';
 
 export class YouTubeCommand extends SlashCommand {

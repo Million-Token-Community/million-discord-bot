@@ -1,7 +1,7 @@
 import nodeFetch, { Response } from 'node-fetch';
 import * as FormData from 'form-data';
 import {random as randomInt } from 'lodash';
-import { Channel, DataService } from './DataService';
+import { Channel, DataService } from '../../../services/YouTubeSubService';
 
 export class YouTubeSubscription {
   constructor() {

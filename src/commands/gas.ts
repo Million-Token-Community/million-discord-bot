@@ -59,7 +59,10 @@ module.exports = class GasCommand extends SlashCommand {
 
       return await ctx.send({ embeds: [embed] });
     } catch {
-      return await ctx.send(`Something is wrong - try again a bit later.`);
+      return await ctx.send(
+        `Something is wrong - try again a bit later.`, 
+        {ephemeral: true}
+      );
     }
   }
 };

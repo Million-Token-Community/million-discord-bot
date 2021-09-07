@@ -22,11 +22,12 @@ module.exports = class HelloCommand extends SlashCommand {
 
       const {price, priceChange} = resp.data;
       commandResponse = `<:mm:861734660081451018> Price is **$${price}** (${priceChange}%).`;
+      await ctx.send(commandResponse);
     } catch (error) {
       console.log('"price" command error:\n', error);
       commandResponse = `Something went wrong - try again a bit later.`;
+      await ctx.send(commandResponse, {ephemeral: true});
     }
 
-    await ctx.send(commandResponse);
   }
 };

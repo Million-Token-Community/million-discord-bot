@@ -1,5 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
 import { Client, WSEventType } from 'discord.js';
 import {GatewayServer, SlashCreator } from 'slash-create';
 import * as path from 'path';
@@ -12,12 +10,13 @@ import {SocialStatusDisplay} from './tasks/SocialStatusDisplay/SocialStatusDispl
 import *  as xmlparser from 'express-xml-bodyparser';
 import { youtube } from './tasks/Promotions/YouTube/Routes';
 import { YouTubeSubscription } from './tasks/Promotions/YouTube/Subscription';
+import { port, token, applicationID, publicKey } from './config';
 
 class Main {
   private creator: SlashCreator;
   protected client: Client;
   private messageHandlerManager:MessageHandlerManager
-  private PORT: string | number = process.env.PORT || 3000;
+  private PORT: string | number = port;
 
   constructor() {
     this.initializeApp();
@@ -64,9 +63,9 @@ class Main {
     console.log('Starting...');
     this.client = client;
     this.creator = new SlashCreator({
-      applicationID: process.env.APPLICATION_ID,
-      publicKey: process.env.PUBLIC_KEY,
-      token: process.env.TOKEN,
+      applicationID,
+      publicKey,
+      token,
     });
 
     console.log('Initializing listeners...');
@@ -86,7 +85,7 @@ class Main {
       this.messageHandlerManager = new MessageHandlerManager() 
       .add(new SuggestionsBox())
 
-    await this.client.login(process.env.TOKEN);
+    await this.client.login(token);
   }
 
   initializeTasks() {

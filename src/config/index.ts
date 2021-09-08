@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { production } from './production';
 import { development } from './development';
 
@@ -5,9 +8,11 @@ export const isProduction = process.env.NODE_ENV === 'production';
 
 export const { channelIds, roleIds } = isProduction ? production : development;
 
+export const port = process.env.PORT || 3000;
+
 export const token = process.env.TOKEN;
 
-export const applicationId = process.env.APPLICATION_ID;
+export const applicationID = process.env.APPLICATION_ID;
 
 export const publicKey = process.env.PUBLIC_KEY;
 

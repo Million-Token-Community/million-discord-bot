@@ -2,7 +2,7 @@ import {Client, TextChannel} from 'discord.js';
 import {cache} from '../../cache';
 import {ShillMessage, ShillMessageDataService} from '../../services/ShillMessageDataService';
 import {random as randomInt} from 'lodash';
-import {channelIds} from '../../channel-IDs';
+import { channelIds } from '../../config';
 import {ShillMessageAddon} from '../../services/ShillMessageAddon';
 
 export class RecurringShills {

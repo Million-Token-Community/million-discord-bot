@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { IMessageHandler } from "./IMessageHandler";
-import {channelIds} from '../channel-IDs'
+import { channelIds } from '../config';
 
 export class SuggestionsBox implements IMessageHandler {
     

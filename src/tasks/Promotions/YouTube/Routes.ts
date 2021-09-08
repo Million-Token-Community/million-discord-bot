@@ -1,6 +1,6 @@
 import * as express from "express";
 import { Client, TextChannel } from "discord.js";
-import { channelIds } from "../../../channel-IDs";
+import { channelIds } from '../../../config';
 
 export interface RawPublication {
   [key: string]: unknown

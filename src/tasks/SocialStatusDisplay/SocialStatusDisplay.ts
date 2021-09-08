@@ -1,11 +1,11 @@
 import {client as discordClient} from '../../discordClient';
 import {VoiceChannel} from 'discord.js';
 import {TwitterService} from '../../services/TwitterService';
-import {channelIds} from '../../channel-IDs';
 import {RedditService} from '../../services/RedditService';
 import {EmailSubsService} from '../../services/EmailSubs';
 import {MillionStatsService} from '../../services/MillionStatsService';
 import {TelegramService} from '../../services/TelegramService';
+import { channelIds } from '../../config';
 
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;

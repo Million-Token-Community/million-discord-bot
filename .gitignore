@@ -29,3 +29,4 @@ dist/
 .DS_Store
 
 .env
+src/config/development.ts

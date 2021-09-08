@@ -2,6 +2,7 @@ import { SlashCommand } from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
 const Discord = require('discord.js');
+import { guildId } from '../config';
 
 module.exports = class HelloCommand extends SlashCommand {
   
@@ -10,7 +11,7 @@ module.exports = class HelloCommand extends SlashCommand {
     super(creator, {
       name: 'liquidity',
       description: 'Get todays liquidity in the USDC/MM Pool (As LP Millionaire)',
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [guildId],
       options: [
         {
           name: 'usdc',

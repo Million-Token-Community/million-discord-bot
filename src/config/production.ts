@@ -13,7 +13,7 @@ const channelIds = {
 
 const roleIds = {
   leadAdmin: '870429095941517332',
-  admins: '870411279108571216',
+  admin: '870411279108571216',
   leadDev: '870435957969657886',
   leadAmbassador: '870501520796418059'
 }

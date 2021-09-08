@@ -1,11 +1,12 @@
 import { SlashCommand } from 'slash-create';
+import { guildId } from '../config';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
     super(creator, {
       name: 'lambo',
       description: 'When lambo? (as a millionaire).',
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [guildId],
     });
 
     // Not required initially, but required for reloading with a fresh file.

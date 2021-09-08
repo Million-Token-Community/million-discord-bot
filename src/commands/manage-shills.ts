@@ -4,26 +4,28 @@ import {
   MessageEmbedOptions
 } from 'slash-create';
 import { ShillMessageDataService, ShillMessage } from '../services/ShillMessageDataService';
-import {channelIds} from '../channel-IDs'
 import {client} from '../discordClient';
 import { Message, TextChannel } from 'discord.js';
 import {commandOptions} from './manage-shills.command-options'
 import {recuringShills} from '../tasks/Announcements/RecurringShills'
+import { roleIds, channelIds, guildId } from '../config';
+
+const { leadAdmin, admin, leadAmbassador, leadDev } = roleIds;
 
 module.exports = class ManageShillsCommands extends SlashCommand {
   //  only allow Lead Admins, Admins, Lead Dev, and Lead Ambassador
   allowedRoles = [          
-    '870411279108571216',  
-    '870429095941517332',   
-    '870435957969657886',    
-    '870501520796418059'    
+    leadAdmin,  
+    admin,   
+    leadAmbassador,    
+    leadDev    
   ];
 
   constructor(creator) {
     super(creator, {
       name: 'manage_messages',
       description: 'View messages and reset message cache',
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [guildId],
       options: commandOptions
     });
 

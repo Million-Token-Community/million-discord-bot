@@ -6,13 +6,14 @@ import {
 } from 'slash-create';
 import fetch, {Response} from 'node-fetch';
 import { cache } from '../cache';
+import { guildId } from '../config';
 
 module.exports = class GasCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: 'gas',
       description: `Gets current gas prices (as a millionaire)`,
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [guildId],
     });
 
     // Not required initially, but required for reloading with a fresh file.

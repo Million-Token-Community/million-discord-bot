@@ -1,7 +1,9 @@
 import { SlashCommand, SlashCreator, CommandContext, CommandOptionType, MessageEmbedOptions } from 'slash-create';
 import { YouTubeSubscription } from '../tasks/Promotions/YouTube/Subscription';
 import { DataService } from '../tasks/Promotions/YouTube/DataService';
-import { roleIds } from '../role-IDs';
+import { roleIds, guildId } from '../config';
+
+const { leadAdmin, admin, leadAmbassador, leadDev } = roleIds;
 
 export class YouTubeCommand extends SlashCommand {
   private allowedRoles: string[]
@@ -10,7 +12,7 @@ export class YouTubeCommand extends SlashCommand {
     super(creator, {
       name: 'youtube',
       description: 'YouTube realated commands',
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [guildId],
       options: [
         {
           name: 'subscribe',
@@ -63,10 +65,10 @@ export class YouTubeCommand extends SlashCommand {
     // Not required initially, but required for reloading with a fresh file.
     this.filePath = __filename;
     this.allowedRoles = [
-      roleIds.admins,
-      roleIds.leadAdmin,
-      roleIds.leadAmbassador,
-      roleIds.leadDev
+      leadAdmin,
+      admin,
+      leadAmbassador,
+      leadDev
     ]
   }
 

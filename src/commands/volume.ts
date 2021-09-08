@@ -2,13 +2,14 @@ import { CommandContext, SlashCommand } from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber, formatPercentageChange } from '../utils';
 import { cache } from '../cache';
+import { guildId } from '../config';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
     super(creator, {
       name: 'volume',
       description: 'Get 24h volume (as a millionaire).',
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [guildId],
     });
 
     // Not required initially, but required for reloading with a fresh file.

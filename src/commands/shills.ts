@@ -1,14 +1,14 @@
 import { SlashCommand, CommandContext, CommandOptionType } from 'slash-create';
 import {ShillMessageDataService} from '../services/ShillMessageDataService';
 import {createStatusEmbed, hasAllowedRoles} from '../utils';
-import {roleIds} from '../role-IDs';
+import { roleIds, guildId } from '../config';
 
-const {leadAdmin, admins, leadAmbassador, leadDev} = roleIds;
+const { leadAdmin, admin, leadAmbassador, leadDev } = roleIds;
 
 module.exports = class HelloCommand extends SlashCommand {
   allowedRoles = [
     leadAdmin,
-    admins,
+    admin,
     leadAmbassador,
     leadDev
   ]
@@ -17,7 +17,7 @@ module.exports = class HelloCommand extends SlashCommand {
     super(creator, {
       name: 'shills',
       description: 'Send shill messages.',
-      guildIDs: [process.env.GUILD_ID],
+      guildIDs: [guildId],
       options: [
         {
           type: CommandOptionType.SUB_COMMAND,

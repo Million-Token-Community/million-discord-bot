@@ -1,3 +1,8 @@
+/**
+ * To run bot at your local environment create file 'development.ts' 
+ * inside this 'config' folder and paste there everything what you 
+ * have here and change all the IDs io your personal.
+ */
 const channelIds = {
   lounge: '870409423825276995',
   suggestion_box: '870438625219842090',

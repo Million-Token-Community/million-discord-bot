@@ -1,5 +1,5 @@
 import { production } from './production';
-import { development } from './development'; // get template from 'example.ts'
+import { development } from './development';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 

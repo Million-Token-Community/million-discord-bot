@@ -15,21 +15,16 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) {
+    let exampleEmbed;
     try {
       const resp = await MillionStatsService.getHolders();
 
       if (resp.hasError) throw resp.error;
       
       const numFormatter = new Intl.NumberFormat('en-US');
-      const holders = numFormatter.format(resp.data);      
+      const holders = numFormatter.format(resp.data);
 
-      /*
-      return await ctx.send(
-        `<:pepeholdmm:861835461458657331> Current holders count is **${holders}**.`,
-      );
-      */
-
-      const exampleEmbed = new Discord.MessageEmbed()
+      exampleEmbed = new Discord.MessageEmbed()
             .setColor('#C51162')//Pink50 (A700)
             .addField(`MM Hodlers <:pepeholdmm:861835461458657331>`, `${holders}`)
 
@@ -37,10 +32,10 @@ module.exports = class HelloCommand extends SlashCommand {
 
     } catch (error) {
       console.log('"holders" command error: \n', error);
-      return await ctx.send(
-        `Something went wrong - try again a bit later.`,
-        {ephemeral: true}
-      );
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#C51162')//Pink50 (A700)
+      .addField(`Something went wrong`, `try again a bit later.`)
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});//TODO test this
     }
   }
 };

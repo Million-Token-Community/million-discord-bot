@@ -1,7 +1,8 @@
-import { SlashCommand, CommandContext } from 'slash-create';
+import { SlashCommand, CommandContext, MessageEmbedOptions} from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
 import { cache } from '../cache';
+import {channelIds} from '../channel-IDs';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -16,7 +17,16 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) {
-    const apiUrl =
+    if (!this.isBotCommandsChannel(ctx)) {
+      this.createError(
+        'Access denied',
+        `This command cannot be used in this channel.`
+      );
+    }
+
+    try {
+
+      const apiUrl =
       'https://api.coingecko.com/api/v3/coins/million?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
     const init = {
       headers: {
@@ -46,5 +56,40 @@ module.exports = class HelloCommand extends SlashCommand {
       commandResponse = `Something is wrong - try again a bit later.`;
       await ctx.send(commandResponse, {ephemeral: true});
     }
+
+
+    } catch (error){
+      console.log('MANAGE_MESSAGE_ERROR:\n', error);
+      const embed = this.createStatusEmbed(
+        error.title || 'Error',
+        error.message || 'Something went wrong - try again later...',
+        true
+      );
+    
+      return await ctx.send({embeds: [embed], ephemeral: true});
+    }
+    
   }
+
+
+  isBotCommandsChannel(ctx: CommandContext) {
+    return ctx.channelID === channelIds.botCommandsChannel;
+  }
+
+  createStatusEmbed(title: string, message: string, error = false): MessageEmbedOptions {
+    const color = error ? 16711680 : 65280;
+    const mainTitle = error ? 'Error' : 'Success';
+
+    return {
+      color: color,
+      title: mainTitle, 
+      fields: [
+        {
+          name: title, 
+          value: message
+        }
+      ]
+    }
+  }
+
 };

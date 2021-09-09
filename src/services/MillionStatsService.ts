@@ -1,79 +1,96 @@
-import fetch, {Response, RequestInit} from 'node-fetch';
+import fetch, {//Response, 
+  RequestInit} from 'node-fetch';
 import { cache } from '../cache';
-import {formatPercentageChange, hasJsonContentType} from '../utils';
-import {ServiceResponse} from './ServiceResponse';
+import {
+  formatPercentageChange, 
+  createCovalentUrl
+} from '../utils';
+import {ServiceResponse} from '../models/ServiceResponse';
 import {isFinite} from 'lodash';
 import {PriceDataMM} from './PriceDataMM';
+import { HoldersData } from '../models/HoldersData';
+import {
+  ContractAddresses, 
+  CovalentChainIds,
+  CovalentJsonBody,
+  SolscanJsonBody
+} from '../types';
+import axios, { AxiosResponse } from 'axios';
 
 export class MillionStatsService {
-  static async getHolders(): Promise<ServiceResponse<number>> {
+  static solanaHoldersUrl = `https://api.solscan.io/token/holders?token=${ContractAddresses.SOLANA}&offset=0&size=20`;
+  
+  static uniswapHoldersUrl = createCovalentUrl(
+    CovalentChainIds.ETHEREUM_MAINNET, 
+    ContractAddresses.UNISWAP
+  );
+
+  static bscHoldersUrl = createCovalentUrl(
+    CovalentChainIds.BINANCE_SMART_CHAIN, 
+    ContractAddresses.BINANCE_SMART_CHAIN
+  );
+
+  static polygonHoldersUrl = createCovalentUrl(
+    CovalentChainIds.POLYGON_MAINNET, 
+    ContractAddresses.POLYGON
+  );
+
+  static defaultFetchOptions: RequestInit = {
+    method: 'GET',
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+    },
+  };
+
+  static async getHolders(): Promise<ServiceResponse<HoldersData>> {
     try {
       const cacheKey = 'holders';
       const hasCachedData = await cache.has(cacheKey);
-      let holders: number;
-      let isValidHolders: boolean;
 
       if (hasCachedData) {
-        holders = await cache.get(cacheKey) as number;
-        isValidHolders = isFinite(holders);
+        const holdersData = await cache.get(cacheKey) as HoldersData;
+        const isValidHolders = holdersData instanceof HoldersData
         
         if (!isValidHolders) {
-          throw new Error('"holders" cache value is not a number');
+          throw new Error('"holders" cache value is not instance of holdersData');
         }
 
-        return new ServiceResponse(holders);
+        return new ServiceResponse(holdersData);
       }
       
-      const ethExplorerUrl = `https://api.ethplorer.io/getAddressInfo/0x6b4c7a5e3f0b99fcd83e9c089bddd6c7fce5c611?apiKey=freekey`;
-      const covalentUrl = `https://api.covalenthq.com/v1/56/tokens/0xBF05279F9Bf1CE69bBFEd670813b7e431142Afa4/token_holders/?key=${process.env.COVALENT_API_KEY}&page-size=1`;
-      const init = {
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-        },
-      };
+      const [solanaJsonBody, ...covalentJsonBodies] = await Promise.all([
+        // SolScan response
+        axios.get(this.solanaHoldersUrl),
 
-      const [ethExplorerResp, covalentResp]: Response[] = await Promise.all([
-        fetch(ethExplorerUrl, init),
-        fetch(covalentUrl, init),
+        // the rest will be from CovalentHQ
+        axios.get(this.uniswapHoldersUrl),
+        axios.get(this.bscHoldersUrl),
+        axios.get(this.polygonHoldersUrl)
       ]);
 
-      const isEthContentJSON = hasJsonContentType(ethExplorerResp);
-      const isCovalentContentJSON = hasJsonContentType(covalentResp);
-      const isValidJSON = isEthContentJSON && isCovalentContentJSON;
+      const solanaHolders = this.getHoldersFromSolscanJson(solanaJsonBody.data);
 
-      if (!isValidJSON) throw new Error ('API responses should return JSON');
+      const [
+        uniswapHolders,
+        bscHolders,
+        polygonHolders
+      ] = this.getHoldersFromCovalentJson(covalentJsonBodies);
+        
+      const holdersData = new HoldersData(
+        solanaHolders,
+        uniswapHolders,
+        bscHolders,
+        polygonHolders  
+      )
 
-      const [ethExplorerBody, covalentBody] = await Promise.all([
-        ethExplorerResp.json(),
-        covalentResp.json(),
-      ]);
+      await cache.set(cacheKey, holdersData, 60);
 
-      const uniSwapHolders = ethExplorerBody
-        ?.tokenInfo
-        ?.holdersCount as number;
-
-      const bscHolders = covalentBody
-        ?.data
-        ?.pagination
-        ?.total_count as number;
-
-      const isValidUniSwapHolders = isFinite(uniSwapHolders);
-      const isValidBscHolders = isFinite(bscHolders);
-      isValidHolders = isValidUniSwapHolders && isValidBscHolders;
-
-      if (!isValidHolders) {
-        const msg = 'API response(s) did not return a valid number for holders';
-        throw new Error(msg);
-      }
-
-      holders = uniSwapHolders + bscHolders;
-      await cache.set(cacheKey, holders, 30);
-
-      return new ServiceResponse(holders);  
+      return new ServiceResponse(holdersData);  
     } catch (error) {
       return new ServiceResponse(null, error);
     }
   }
+
   //@ts-ignore 
   static async getPriceData(): Promise<ServiceResponse<PriceDataMM>> {
     try {
@@ -152,16 +169,59 @@ export class MillionStatsService {
       } catch (error) {
         throw new Error('Error parsing price from api into float');
       }
-      
-
-     
-    
     
     } catch (error) {
       return new ServiceResponse(null, error);
     }
-
   }
 
+  /**
+   * Returns an array of holder counts from each CovalentHQ JSON response
+   * @param jsonBodies 
+   * @returns 
+   */
+  static getHoldersFromCovalentJson(jsonBodies: AxiosResponse<CovalentJsonBody>[]): number[] {
+    const holders = jsonBodies.map((body) => {
+      const holdersCount =  body
+        ?.data
+        ?.data
+        ?.pagination
+        ?.total_count;
 
+      if (!isFinite(holdersCount)) {
+        throw new Error('Expected holders count from CovalentHQ API to be a number');
+      }
+      
+      return holdersCount;
+    });
+
+    return holders;
+  }
+
+  /**
+   * 
+   * @param json 
+   */
+  static getHoldersFromSolscanJson(json: SolscanJsonBody): number {
+    const owners = json.data.result;
+    let count = 0;
+
+    if (typeof owners === 'undefined') {
+      throw new Error('Invalid results from Solscan');
+    }
+
+    for (const owner of owners) {
+      const mmAmount = owner?.uiAmount;
+
+      if (!isFinite(mmAmount)) {
+        throw new Error('mmAmount should be a number')
+      }
+
+      if (mmAmount > 0) {
+        count +=1;
+      }
+    }
+
+    return count;
+  }
 }

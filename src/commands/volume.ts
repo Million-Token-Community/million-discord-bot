@@ -41,11 +41,11 @@ module.exports = class HelloCommand extends SlashCommand {
         )}** (${formatPercentageChange(volumeChange)}%).`;
 
         await cache.set(cacheKey, commandResponse);
+        await ctx.send(commandResponse);
       }
     } catch (error) {
       commandResponse = `Something went wrong - try again a bit later.`;
+      await ctx.send(commandResponse, {ephemeral: true});
     }
-
-    await ctx.send(commandResponse);
   }
 };

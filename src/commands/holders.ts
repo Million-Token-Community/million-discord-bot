@@ -1,4 +1,4 @@
-import { SlashCommand } from 'slash-create';
+import { CommandContext, SlashCommand } from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
 
 module.exports = class HelloCommand extends SlashCommand {
@@ -13,7 +13,7 @@ module.exports = class HelloCommand extends SlashCommand {
     this.filePath = __filename;
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
     try {
       const resp = await MillionStatsService.getHolders();
 
@@ -27,7 +27,10 @@ module.exports = class HelloCommand extends SlashCommand {
       );
     } catch (error) {
       console.log('"holders" command error: \n', error);
-      return await ctx.send(`Something went wrong - try again a bit later.`);
+      return await ctx.send(
+        `Something went wrong - try again a bit later.`,
+        {ephemeral: true}
+      );
     }
   }
 };

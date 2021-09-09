@@ -1,8 +1,10 @@
-import { SlashCommand, CommandContext, MessageEmbedOptions} from 'slash-create';
+import { SlashCommand, CommandContext} from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
 import { cache } from '../cache';
 import {channelIds} from '../channel-IDs';
+
+const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -17,11 +19,19 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) {
-    if (!this.isBotCommandsChannel(ctx)) {
-      this.createError(
-        'Access denied',
-        `This command cannot be used in this channel.`
-      );
+
+    if (ctx.channelID !== channelIds.botCommandsChannel &&
+        ctx.channelID !== channelIds.botCommand_DevChannel) {
+
+      const exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#FF0000')
+            .setTitle(`Access denied`)
+            .addField(`This command cannot be used in this channel.`, false)
+     
+      await ctx.send({ embeds: [exampleEmbed] });
+      return
+
+
     }
 
     try {
@@ -60,36 +70,11 @@ module.exports = class HelloCommand extends SlashCommand {
 
     } catch (error){
       console.log('MANAGE_MESSAGE_ERROR:\n', error);
-      const embed = this.createStatusEmbed(
-        error.title || 'Error',
-        error.message || 'Something went wrong - try again later...',
-        true
-      );
-    
-      return await ctx.send({embeds: [embed], ephemeral: true});
     }
     
   }
 
 
-  isBotCommandsChannel(ctx: CommandContext) {
-    return ctx.channelID === channelIds.botCommandsChannel;
-  }
 
-  createStatusEmbed(title: string, message: string, error = false): MessageEmbedOptions {
-    const color = error ? 16711680 : 65280;
-    const mainTitle = error ? 'Error' : 'Success';
-
-    return {
-      color: color,
-      title: mainTitle, 
-      fields: [
-        {
-          name: title, 
-          value: message
-        }
-      ]
-    }
-  }
 
 };

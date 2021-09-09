@@ -1,6 +1,6 @@
 import nodeFetch, {RequestInit} from 'node-fetch';
 import {hasJsonContentType} from '../utils'
-import {ServiceResponse} from './ServiceResponse';
+import {ServiceResponse} from '../models/ServiceResponse';
 
 export class TelegramService {
   static readonly baseUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;

@@ -22,13 +22,10 @@ module.exports = class HelloCommand extends SlashCommand {
       if (resp.hasError) throw resp.error;
 
       const {price, priceChange} = resp.data;
-      //commandResponse = `<:mm:861734660081451018> Price is **$${price}** (${priceChange}%).`;
-      //await ctx.send(commandResponse);
 
-      //TODO test this
       exampleEmbed = new Discord.MessageEmbed()
       .setColor('#6200EA')//DeepPurple50 (A700)
-      .addField(`<:mm:861734660081451018> MM Price`, `**$${price}** (${priceChange}%)`)
+      .addField(`<:mm:861734660081451018> MM Price`, `$${price} (${priceChange}%)`)
 
       await ctx.send({embeds: [exampleEmbed], ephemeral: true});
 
@@ -37,7 +34,7 @@ module.exports = class HelloCommand extends SlashCommand {
       exampleEmbed = new Discord.MessageEmbed()
       .setColor('#6200EA')//DeepPurple50 (A700)
       .addField(`Something went wrong`, `try again a bit later.`)
-      await ctx.send({embeds: [exampleEmbed], ephemeral: true});//TODO test this
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
 
   }

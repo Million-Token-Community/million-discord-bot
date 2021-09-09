@@ -36,14 +36,6 @@ module.exports = class HelloCommand extends SlashCommand {
         const responseBody = await response.json();
         const marketCapUsd = responseBody.market_data.market_cap.usd;
 
-        /*
-        commandResponse = `:billed_cap: Market cap is **$${formatLargeNumber(
-          marketCapUsd,
-        )}**.`;
-        await cache.set(cacheKey, commandResponse);
-        */
-
-        //TODO test this
         exampleEmbed = new Discord.MessageEmbed()
             .setColor('#AA00FF')//purple50 (A700)
             .addField(`MM Market Cap :billed_cap:`, `${formatLargeNumber(marketCapUsd)}`)
@@ -55,7 +47,7 @@ module.exports = class HelloCommand extends SlashCommand {
       exampleEmbed = new Discord.MessageEmbed()
       .setColor('#AA00FF')//purple50 (A700)
       .addField(`Something went wrong`, `try again a bit later.`)
-      await ctx.send({embeds: [exampleEmbed], ephemeral: true});//TODO test this
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
 
 

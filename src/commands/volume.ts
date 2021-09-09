@@ -37,19 +37,9 @@ module.exports = class HelloCommand extends SlashCommand {
         const volume = dailyData.volume;
         const volumeChange = dailyData.volume_change_pct;
 
-        /*
-        commandResponse = `<:mmstonks:861835426738470953> 24h volume is **$${formatLargeNumber(
-          volume,
-        )}** (${formatPercentageChange(volumeChange)}%).`;
-
-        await cache.set(cacheKey, commandResponse);
-        await ctx.send(commandResponse);
-        */
-
-      //TODO test this
       exampleEmbed = new Discord.MessageEmbed()
       .setColor('#64FFDA')//Teal (A200)
-      .addField(`MM 24h volume`, `**$${formatLargeNumber(volume,)}** (${formatPercentageChange(volumeChange)}%)`)
+      .addField(`MM 24h Volume`, `$${formatLargeNumber(volume,)} (${formatPercentageChange(volumeChange)}%)`)
 
       await cache.set(cacheKey, exampleEmbed);
       await ctx.send({embeds: [exampleEmbed], ephemeral: true});

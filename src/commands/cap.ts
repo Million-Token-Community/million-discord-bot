@@ -2,7 +2,7 @@ import { SlashCommand, CommandContext} from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
 import { cache } from '../cache';
-import {channelIds} from '../channel-IDs';
+//import {channelIds} from '../channel-IDs';
 
 const Discord = require('discord.js');
 
@@ -20,6 +20,7 @@ module.exports = class HelloCommand extends SlashCommand {
 
   async run(ctx: CommandContext) {
 
+    /*
     if (ctx.channelID !== channelIds.botCommandsChannel &&
         ctx.channelID !== channelIds.botCommand_DevChannel) {
 
@@ -27,13 +28,9 @@ module.exports = class HelloCommand extends SlashCommand {
             .setColor('#FF0000')
             .addField(`Access denied`, `This command cannot be used in this channel.`)
       await ctx.send({embeds: [exampleEmbed], ephemeral: true});
-      return
+      return;
 
-
-    }
-
-    try {
-
+    }*/
       const apiUrl =
       'https://api.coingecko.com/api/v3/coins/million?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
     const init = {
@@ -58,7 +55,12 @@ module.exports = class HelloCommand extends SlashCommand {
         )}**.`;
 
         await cache.set(cacheKey, commandResponse);
-        await ctx.send(commandResponse);
+        //await ctx.send(commandResponse);
+        const exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#AA00FF')//purple50 (A700)
+            .addField(`:billed_cap: Market cap`, `${formatLargeNumber(marketCapUsd,)}`)
+
+        await ctx.send({embeds: [exampleEmbed], ephemeral: true});
       }
     } catch {
       commandResponse = `Something is wrong - try again a bit later.`;
@@ -66,9 +68,6 @@ module.exports = class HelloCommand extends SlashCommand {
     }
 
 
-    } catch (error){
-      console.log('MANAGE_MESSAGE_ERROR:\n', error);
-    }
     
   }
 

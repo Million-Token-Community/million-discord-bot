@@ -30,8 +30,8 @@ module.exports = class HelloCommand extends SlashCommand {
       */
 
       const exampleEmbed = new Discord.MessageEmbed()
-            .setColor('#AA00FF')//purple50 (A700)
-            .addField(`<:pepeholdmm:861835461458657331> Current holders count`, `${holders}`)
+            .setColor('#C51162')//Pink50 (A700)
+            .addField(`MM Hodlers <:pepeholdmm:861835461458657331>`, `${holders}`)
 
         return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
 

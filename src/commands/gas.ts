@@ -45,7 +45,7 @@ module.exports = class GasCommand extends SlashCommand {
 
       const embed: MessageEmbedOptions = {
         title: ':fuelpump: Current Gas Prices (gwei)',
-        color: 15509760,
+        color: 15509760,//Yellow50 (A200)
         fields: [
           { name: 'Low', value: SafeGasPrice, inline: true },
           { name: 'Average', value: ProposeGasPrice, inline: true },
@@ -57,7 +57,8 @@ module.exports = class GasCommand extends SlashCommand {
         timestamp: new Date(),
       };
 
-      return await ctx.send({ embeds: [embed],  ephemeral: true });
+      //return await ctx.send({ embeds: [embed],  ephemeral: true });
+      return await ctx.send({ embeds: [embed] });
     } catch {
       return await ctx.send(
         `Something is wrong - try again a bit later.`, 

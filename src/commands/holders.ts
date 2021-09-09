@@ -1,5 +1,6 @@
 import { CommandContext, SlashCommand } from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
+const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -22,9 +23,18 @@ module.exports = class HelloCommand extends SlashCommand {
       const numFormatter = new Intl.NumberFormat('en-US');
       const holders = numFormatter.format(resp.data);      
 
+      /*
       return await ctx.send(
         `<:pepeholdmm:861835461458657331> Current holders count is **${holders}**.`,
       );
+      */
+
+      const exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#AA00FF')//purple50 (A700)
+            .addField(`<:pepeholdmm:861835461458657331> Current holders count`, `${holders}`)
+
+        return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
+
     } catch (error) {
       console.log('"holders" command error: \n', error);
       return await ctx.send(

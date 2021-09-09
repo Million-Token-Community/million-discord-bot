@@ -35,7 +35,7 @@ module.exports = class HelloCommand extends SlashCommand {
       exampleEmbed = new Discord.MessageEmbed()
       .setColor('#C51162')//Pink50 (A700)
       .addField(`Something went wrong`, `try again a bit later.`)
-      await ctx.send({embeds: [exampleEmbed], ephemeral: true});//TODO test this
+      return await ctx.send({embeds: [exampleEmbed], ephemeral: true});//TODO test this
     }
   }
 };

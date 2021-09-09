@@ -25,10 +25,8 @@ module.exports = class HelloCommand extends SlashCommand {
 
       const exampleEmbed = new Discord.MessageEmbed()
             .setColor('#FF0000')
-            .setTitle(`Access denied`)
-            .addField(`This command cannot be used in this channel.`)
-     
-      await ctx.send({ embeds: [exampleEmbed] }, {ephemeral: true});
+            .addField(`Access denied`, `This command cannot be used in this channel.`)
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
       return
 
 

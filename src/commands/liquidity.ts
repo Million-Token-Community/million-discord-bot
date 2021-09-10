@@ -1,7 +1,7 @@
 import { SlashCommand } from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
-const Discord = require('discord.js');
+import {MessageEmbed} from 'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   
@@ -36,10 +36,10 @@ module.exports = class HelloCommand extends SlashCommand {
   
   async run(ctx) {
 
-    var currentSubCommandName = '';
-    var currentSubCommandDesc = '';
-    var token1Name = '';
-    var poolId = '0x84383fb05f610222430f69727aa638f8fdbf5cc1';//USDC MM 1% Pool as default
+    let currentSubCommandName = '';
+    let currentSubCommandDesc = '';
+    let token1Name = '';
+    let poolId = '0x84383fb05f610222430f69727aa638f8fdbf5cc1';//USDC MM 1% Pool as default
     
 
     //console.log(ctx);
@@ -98,27 +98,27 @@ module.exports = class HelloCommand extends SlashCommand {
         body.on('data', data => {
           const json = JSON.parse(data)
           //console.log(json)
-          let volumeUSD_value = json.data.pool.poolDayData[0].volumeUSD;
-          let priceMM = parseFloat(json.data.pool.poolDayData[0].token0Price);
-          let priceUSDC = parseFloat(json.data.pool.poolDayData[0].token1Price);//could be eth in case of other pool
-          let tvl_MM = json.data.pool.totalValueLockedToken0;
-          let tvl_USDC = json.data.pool.totalValueLockedToken1;//could be eth in case of other pool
+          const volumeUSD_value = json.data.pool.poolDayData[0].volumeUSD;
+          const priceMM = parseFloat(json.data.pool.poolDayData[0].token0Price);
+          const priceUSDC = parseFloat(json.data.pool.poolDayData[0].token1Price);//could be eth in case of other pool
+          const tvl_MM = json.data.pool.totalValueLockedToken0;
+          const tvl_USDC = json.data.pool.totalValueLockedToken1;//could be eth in case of other pool
           //when dealing with eth price, its so low it needs 4 digits after the dot.
-          let decemals_token0 = priceUSDC >= 1 ? 2 : 4;
-          let decemals_token1 = priceMM >= 1 ? 2 : 4;
+          const decemals_token0 = priceUSDC >= 1 ? 2 : 4;
+          const decemals_token1 = priceMM >= 1 ? 2 : 4;
 
 
-          const exampleEmbed = new Discord.MessageEmbed()
+          const exampleEmbed = new MessageEmbed()
             .setColor('#18FFFF')
             .setThumbnail('https://imgur.com/NCcqu3m.png')
             .setTitle(`${currentSubCommandDesc}`)
             .setURL(`https://info.uniswap.org/#/pools/${poolId}`)
-           .addFields(
-            { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, Inline: true },
+           .addFields([
+            { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, inline: true },
             //{ name: '\u200B', value: '\u200B', Inline: false },
-            { name: `MM Price:`, value: `${priceUSDC.toFixed(decemals_token0)} ${token1Name}`, Inline: false },
-            { name: `${token1Name} Price:`, value: `${priceMM.toFixed(decemals_token1)} MM`, Inline: false },
-        )
+            { name: `MM Price:`, value: `${priceUSDC.toFixed(decemals_token0)} ${token1Name}`, inline: false },
+            { name: `${token1Name} Price:`, value: `${priceMM.toFixed(decemals_token1)} MM`, inline: false },
+           ])
         //.addField('\u200B','\u200B', false)
         .addField('Locked\nMM', `${formatLargeNumber(tvl_MM)}`, true)
         .addField(`Tokens\n${token1Name}`, `${formatLargeNumber(tvl_USDC)}`, true)
@@ -130,6 +130,6 @@ module.exports = class HelloCommand extends SlashCommand {
 
       await getData();
     
-    
+
   }
 };

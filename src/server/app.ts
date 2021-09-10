@@ -23,7 +23,7 @@ export class ExpressApp {
     console.log('App is listening on port:', this.PORT);
   }
 
-  setupGlobals() {
+  setupGlobals(): void {
     // Set discord client instance as global
     this.app.set('discordClient', client);
   }

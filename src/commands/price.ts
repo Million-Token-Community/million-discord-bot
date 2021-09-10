@@ -25,7 +25,7 @@ module.exports = class HelloCommand extends SlashCommand {
 
       exampleEmbed = new Discord.MessageEmbed()
       .setColor('#6200EA')//DeepPurple50 (A700)
-      .addField(`<:mm:861734660081451018> MM Price`, `$${price} (${priceChange}%)`)
+      .addField(`MM Price <:mm:861734660081451018>`, `$${price} (${priceChange}%)`)
 
       await ctx.send({embeds: [exampleEmbed], ephemeral: true});
 

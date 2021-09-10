@@ -91,7 +91,6 @@ export class MillionStatsService {
     }
   }
 
-  //@ts-ignore 
   static async getPriceData(): Promise<ServiceResponse<PriceDataMM>> {
     try {
       const cacheKey = 'priceData';
@@ -150,13 +149,13 @@ export class MillionStatsService {
       }
 
       try {
-        let priceUSDC_today = parseFloat(data.pool.poolDayData[0].token1Price);//price today
-        let priceUSDC_yesterday = parseFloat(data.pool.poolDayData[1].token1Price);//price yesterday
+        const priceUSDC_today = parseFloat(data.pool.poolDayData[0].token1Price);//price today
+        const priceUSDC_yesterday = parseFloat(data.pool.poolDayData[1].token1Price);//price yesterday
         
         if (isFinite(priceUSDC_today) && isFinite(priceUSDC_yesterday)){
           //calculating the precentage change between now and yesteday. I did not multiply by 100 
           //to get percentage since the method we have already does that.
-          let change_24hour = formatPercentageChange((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday);
+          const change_24hour = formatPercentageChange((priceUSDC_today - priceUSDC_yesterday) / priceUSDC_yesterday);
           priceData = new PriceDataMM(priceUSDC_today.toFixed(2), change_24hour);
           cache.set(cacheKey, priceData);
           return new ServiceResponse(priceData);

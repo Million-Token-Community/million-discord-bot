@@ -1,5 +1,6 @@
-import { CommandContext, SlashCommand, MessageEmbedOptions } from 'slash-create';
+import { CommandContext, SlashCommand} from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
+import Discord from'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -14,44 +15,47 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) {
+    let exampleEmbed;
     try {
-      const resp = await MillionStatsService.getHolders();
+      const {data, hasError, error} = await MillionStatsService.getHolders();
+      if (hasError) throw error;
 
-      if (resp.hasError) throw resp.error;
+      exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#C51162')//Pink50 (A700)
+            .addField(
+              `Total MM Hodlers <:pepeholdmm:861835461458657331>`, 
+              `${data.totalHodlers}`, 
+              false
+            )
+            .addField(
+              'BSC',
+              data.bsc,
+              false
+            )
+            .addField(
+              'Polygon',
+              data.polygon,
+              false
+            )
+            .addField(
+              'Solana',
+              data.bsc,
+              false
+            )
+            .addField(
+              `Uniswap`,
+              data.uniswap,
+              false
+            );
 
-      const embedOptions: MessageEmbedOptions = {
-        title: '<:pepeholdmm:861835461458657331> Holders count: ' + resp.data.totalHodlers,
-        fields: [
-          {
-            inline: false,
-            name: 'UniSwap',
-            value: resp.data.uniswap
-          },
-          {
-            inline: false,
-            name: 'BSC',
-            value: resp.data.bsc
-          },
-          {
-            inline: false,
-            name: 'Polygon',
-            value: resp.data.polygon
-          },
-          {
-            inline: false,
-            name: 'Solana',
-            value: resp.data.solana
-          }
-        ]
-      }
-
-      return await ctx.send({embeds: [embedOptions]})
+          
+        return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     } catch (error) {
       console.log('"holders" command error: \n', error);
-      return await ctx.send(
-        `Something went wrong - try again a bit later.`,
-        {ephemeral: true}
-      );
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#C51162')//Pink50 (A700)
+      .addField(`Something went wrong`, `try again a bit later.`)
+      return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
   }
 };

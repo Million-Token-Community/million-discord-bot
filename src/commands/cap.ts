@@ -1,7 +1,8 @@
-import { SlashCommand, CommandContext } from 'slash-create';
+import { SlashCommand, CommandContext} from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber } from '../utils';
 import { cache } from '../cache';
+const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -16,7 +17,7 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) {
-    const apiUrl =
+      const apiUrl =
       'https://api.coingecko.com/api/v3/coins/million?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
     const init = {
       headers: {
@@ -25,26 +26,35 @@ module.exports = class HelloCommand extends SlashCommand {
     };
     const cacheKey = 'cap';
 
-    let commandResponse;
+    let exampleEmbed;
 
     try {
       if (await cache.has(cacheKey)) {
-        commandResponse = await cache.get(cacheKey);
+        exampleEmbed = await cache.get(cacheKey);
       } else {
         const response = await fetch(apiUrl, init);
         const responseBody = await response.json();
         const marketCapUsd = responseBody.market_data.market_cap.usd;
 
-        commandResponse = `:billed_cap: Market cap is **$${formatLargeNumber(
-          marketCapUsd,
-        )}**.`;
+        exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#AA00FF')//purple50 (A700)
+            .addField(`MM Market Cap :billed_cap:`, `${formatLargeNumber(marketCapUsd)}`)
 
-        await cache.set(cacheKey, commandResponse);
-        await ctx.send(commandResponse);
+        await cache.set(cacheKey, exampleEmbed);
+        await ctx.send({embeds: [exampleEmbed], ephemeral: true});
       }
     } catch {
-      commandResponse = `Something is wrong - try again a bit later.`;
-      await ctx.send(commandResponse, {ephemeral: true});
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#AA00FF')//purple50 (A700)
+      .addField(`Something went wrong`, `try again a bit later.`)
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
+
+
+    
   }
+
+
+
+
 };

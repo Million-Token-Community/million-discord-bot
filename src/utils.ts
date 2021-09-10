@@ -2,7 +2,7 @@ import {Response} from 'node-fetch';
 import {MessageEmbedOptions, CommandContext} from 'slash-create';
 import {ContractAddresses, CovalentChainIds} from './types';
 
-export function formatLargeNumber(number: number) {
+export function formatLargeNumber(number: number): string {
   const num = Math.abs(Number(number));
   return num >= 1.0e+9
     ? (num / 1.0e+9).toFixed(2) + "B"
@@ -13,7 +13,7 @@ export function formatLargeNumber(number: number) {
         : num.toFixed(2);
 }
 
-export function formatPercentageChange(number: number) {
+export function formatPercentageChange(number: number): string {
   return `${(number > 0 ? '+' : '')}${(number * 100).toFixed(2)}`;
 }
 

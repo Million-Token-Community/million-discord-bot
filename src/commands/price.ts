@@ -1,5 +1,6 @@
 import { CommandContext, SlashCommand } from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
+const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -14,19 +15,26 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) { 
-    let commandResponse;
+    let exampleEmbed;
     try {
       const resp = await MillionStatsService.getPriceData();
 
       if (resp.hasError) throw resp.error;
 
       const {price, priceChange} = resp.data;
-      commandResponse = `<:mm:861734660081451018> Price is **$${price}** (${priceChange}%).`;
-      await ctx.send(commandResponse);
+
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#6200EA')//DeepPurple50 (A700)
+      .addField(`MM Price <:mm:861734660081451018>`, `$${price} (${priceChange}%)`)
+
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
+
     } catch (error) {
       console.log('"price" command error:\n', error);
-      commandResponse = `Something went wrong - try again a bit later.`;
-      await ctx.send(commandResponse, {ephemeral: true});
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#6200EA')//DeepPurple50 (A700)
+      .addField(`Something went wrong`, `try again a bit later.`)
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
 
   }

@@ -75,7 +75,11 @@ export class SocialStatusDisplay {
 
       if (resp.error) throw resp.error;
 
-      await this.setChannelName(channelIds.holdersChannel, `Holders ${resp.data}`);
+      const holdersCount = resp.data.totalHodlers.replace(',', '');
+      await this.setChannelName(
+        channelIds.holdersChannel, 
+        `Holders ${holdersCount}`
+      );
     } catch (error) {
       console.log('Holders count error: \n', error);
     }

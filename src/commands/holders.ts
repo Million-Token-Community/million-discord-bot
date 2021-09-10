@@ -1,6 +1,6 @@
 import { CommandContext, SlashCommand} from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
-import Discord from'discord.js';
+import * as Discord from'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -39,7 +39,7 @@ module.exports = class HelloCommand extends SlashCommand {
             )
             .addField(
               'Solana',
-              data.bsc,
+              data.solana,
               false
             )
             .addField(
@@ -47,7 +47,6 @@ module.exports = class HelloCommand extends SlashCommand {
               data.uniswap,
               false
             );
-
           
         return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     } catch (error) {

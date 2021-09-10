@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: main
+          ref: deployment
       - name: Set upstream
         run: git remote add upstream ${{ env.UPSTREAM_URL }}
 
@@ -24,11 +24,8 @@ jobs:
       - name: Set username
         run: git config --local user.name "tranpeter08"
 
-      - name: Fetch upstream
-        run: git fetch upstream
-
-      - name: Merge upstream
-        run: git merge upstream/${{ env.TARGET_BRANCH }} --allow-unrelated-histories
+      - name: Pull upstream
+        run: git pull upstream ${{env.TARGET_BRANCH}} --allow-unrelated-histories
 
       - name: Push changes 
         run: git push 

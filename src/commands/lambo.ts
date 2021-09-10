@@ -1,4 +1,5 @@
 import { SlashCommand } from 'slash-create';
+const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -13,11 +14,16 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx) {
-    await ctx.send('Here is your lambo: ' +
-      '<:lambo_0:867765265420779540>' +
-      '<:lambo_1:867765267693436971>' +
-      '<:lambo_2:867765277515841576>' +
-      '<:lambo_3:867765277320413224>');
+      const exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#00E676')//Green50 (A400)
+           .addField('Here is your Lambo', '\u200B')
+            .setImage('https://i.imgur.com/hw8rJeu.png')
+
+        await ctx.send({embeds: [exampleEmbed], ephemeral: true});
 
   }
+
+
+  
+
 };

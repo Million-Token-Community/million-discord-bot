@@ -124,10 +124,12 @@ module.exports = class HelloCommand extends SlashCommand {
         .addField(`Tokens\n${token1Name}`, `${formatLargeNumber(tvl_USDC)}`, true)
 
 
-          ctx.send({ embeds: [exampleEmbed] });
+          ctx.send({ embeds: [exampleEmbed], ephemeral: true });
         })
       }
 
-      getData()
+      await getData();
+    
+
   }
 };

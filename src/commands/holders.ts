@@ -1,5 +1,6 @@
 import { CommandContext, SlashCommand } from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
+const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -14,23 +15,27 @@ module.exports = class HelloCommand extends SlashCommand {
   }
 
   async run(ctx: CommandContext) {
+    let exampleEmbed;
     try {
       const resp = await MillionStatsService.getHolders();
 
       if (resp.hasError) throw resp.error;
       
       const numFormatter = new Intl.NumberFormat('en-US');
-      const holders = numFormatter.format(resp.data);      
+      const holders = numFormatter.format(resp.data);
 
-      return await ctx.send(
-        `<:pepeholdmm:861835461458657331> Current holders count is **${holders}**.`,
-      );
+      exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#C51162')//Pink50 (A700)
+            .addField(`MM Hodlers <:pepeholdmm:861835461458657331>`, `${holders}`)
+
+        return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
+
     } catch (error) {
       console.log('"holders" command error: \n', error);
-      return await ctx.send(
-        `Something went wrong - try again a bit later.`,
-        {ephemeral: true}
-      );
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#C51162')//Pink50 (A700)
+      .addField(`Something went wrong`, `try again a bit later.`)
+      return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
   }
 };

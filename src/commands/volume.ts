@@ -2,6 +2,7 @@ import { CommandContext, SlashCommand } from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber, formatPercentageChange } from '../utils';
 import { cache } from '../cache';
+const Discord = require('discord.js');
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -24,11 +25,11 @@ module.exports = class HelloCommand extends SlashCommand {
     };
     const cacheKey = 'volume';
 
-    let commandResponse;
+    let exampleEmbed;
 
     try {
       if (await cache.has(cacheKey)) {
-        commandResponse = await cache.get(cacheKey);
+        exampleEmbed = await cache.get(cacheKey);
       } else {
         const response = await fetch(apiUrl, init);
         const responseBody = await response.json();
@@ -36,16 +37,20 @@ module.exports = class HelloCommand extends SlashCommand {
         const volume = dailyData.volume;
         const volumeChange = dailyData.volume_change_pct;
 
-        commandResponse = `<:mmstonks:861835426738470953> 24h volume is **$${formatLargeNumber(
-          volume,
-        )}** (${formatPercentageChange(volumeChange)}%).`;
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#64FFDA')//Teal (A200)
+      .addField(`MM 24h Volume`, `$${formatLargeNumber(volume,)} (${formatPercentageChange(volumeChange)}%)`)
 
-        await cache.set(cacheKey, commandResponse);
-        await ctx.send(commandResponse);
+      await cache.set(cacheKey, exampleEmbed);
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
+        
+        
       }
     } catch (error) {
-      commandResponse = `Something went wrong - try again a bit later.`;
-      await ctx.send(commandResponse, {ephemeral: true});
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#64FFDA')//Teal (A200)
+      .addField(`Something went wrong`, `try again a bit later.`)
+      await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
   }
 };

@@ -114,10 +114,10 @@ module.exports = class HelloCommand extends SlashCommand {
             .setTitle(`${currentSubCommandDesc}`)
             .setURL(`https://info.uniswap.org/#/pools/${poolId}`)
            .addFields(
-            { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}\n\n`, Inline: true },
+            { name: `Today's Volume:`, value: `${formatLargeNumber(volumeUSD_value)}`, Inline: true },
             //{ name: '\u200B', value: '\u200B', Inline: false },
             { name: `MM Price:`, value: `${priceUSDC.toFixed(decemals_token0)} ${token1Name}`, Inline: false },
-            { name: `${token1Name} Price:`, value: `${priceMM.toFixed(decemals_token1)} MM\n\n`, Inline: false },
+            { name: `${token1Name} Price:`, value: `${priceMM.toFixed(decemals_token1)} MM`, Inline: false },
         )
         //.addField('\u200B','\u200B', false)
         .addField('Locked\nMM', `${formatLargeNumber(tvl_MM)}`, true)

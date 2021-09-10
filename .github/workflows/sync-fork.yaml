@@ -1,28 +1,33 @@
-name: Sync to Upstream
+name: Sync upstream fork
 
+env:
+  UPSTREAM_URL: "https://github.com/Million-Token-Community/million-discord-bot.git"
+  TARGET_BRANCH: "main"
 on:
   schedule:
-    - cron:  '5 * * * *'
+    - cron: "5 * * * *"
   workflow_dispatch:
-
 jobs:
-  sync_with_upstream:
+  sync-fork:
     runs-on: ubuntu-latest
-    name: Sync HEAD with upstream latest
-
     steps:
-    # Step 1: run a standard checkout action, provided by github
-    - name: Checkout HEAD
-      uses: actions/checkout@v2
-      with:
-        ref: main
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+      - name: Set upstream
+        run: git remote add upstream ${{ env.UPSTREAM_URL }}
 
-    # Step 2: run this sync action - specify the upstream repo, upstream branch to sync with, and target sync branch
-    - name: Pull upstream changes
-      id: sync
-      uses: bdougie/Fork-Sync-With-Upstream-action@fork
-      with:
-        upstream_repository: Million-Token-Community/million-discord-bot
-        upstream_branch: main
-        target_branch: main                       # optional
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set email
+        run: git config --local user.email "tran.peter08@com"
+
+      - name: Set username
+        run: git config --local user.name "tranpeter08"
+
+      - name: Fetch upstream
+        run: git fetch upstream
+
+      - name: Merge upstream
+        run: git merge upstream/${{ env.MAIN_OR_MASTER }}
+
+      - name: Push changes 
+        run: git push 

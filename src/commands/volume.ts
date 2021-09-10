@@ -2,7 +2,7 @@ import { CommandContext, SlashCommand } from 'slash-create';
 import fetch from 'node-fetch';
 import { formatLargeNumber, formatPercentageChange } from '../utils';
 import { cache } from '../cache';
-const Discord = require('discord.js');
+import * as Discord from 'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {

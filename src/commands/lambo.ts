@@ -1,5 +1,5 @@
 import { SlashCommand } from 'slash-create';
-const Discord = require('discord.js');
+import * as Discord from 'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {

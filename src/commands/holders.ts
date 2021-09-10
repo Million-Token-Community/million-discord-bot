@@ -1,6 +1,6 @@
-import { CommandContext, SlashCommand } from 'slash-create';
+import { CommandContext, SlashCommand} from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
-const Discord = require('discord.js');
+import * as Discord from'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -17,19 +17,38 @@ module.exports = class HelloCommand extends SlashCommand {
   async run(ctx: CommandContext) {
     let exampleEmbed;
     try {
-      const resp = await MillionStatsService.getHolders();
-
-      if (resp.hasError) throw resp.error;
-      
-      const numFormatter = new Intl.NumberFormat('en-US');
-      const holders = numFormatter.format(resp.data);
+      const {data, hasError, error} = await MillionStatsService.getHolders();
+      if (hasError) throw error;
 
       exampleEmbed = new Discord.MessageEmbed()
             .setColor('#C51162')//Pink50 (A700)
-            .addField(`MM Hodlers <:pepeholdmm:861835461458657331>`, `${holders}`)
-
+            .addField(
+              `Total MM Hodlers <:pepeholdmm:861835461458657331>`, 
+              `${data.totalHodlers}`, 
+              false
+            )
+            .addField(
+              'BSC',
+              data.bsc,
+              false
+            )
+            .addField(
+              'Polygon',
+              data.polygon,
+              false
+            )
+            .addField(
+              'Solana',
+              data.solana,
+              false
+            )
+            .addField(
+              `Uniswap`,
+              data.uniswap,
+              false
+            );
+          
         return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
-
     } catch (error) {
       console.log('"holders" command error: \n', error);
       exampleEmbed = new Discord.MessageEmbed()

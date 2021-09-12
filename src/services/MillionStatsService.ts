@@ -83,7 +83,8 @@ export class MillionStatsService {
         polygonHolders  
       )
 
-      await cache.set(cacheKey, holdersData, 60);
+      // cache holders data for 10 minutes
+      await cache.set(cacheKey, holdersData, 60 * 10);
 
       return new ServiceResponse(holdersData);  
     } catch (error) {

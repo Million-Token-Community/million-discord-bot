@@ -42,20 +42,22 @@ export class MillionStatsService {
     },
   };
 
-  static async getHolders(): Promise<ServiceResponse<HoldersData>> {
+  static async getHolders(refreshCache = false): Promise<ServiceResponse<HoldersData>> {
     try {
       const cacheKey = 'holders';
-      const hasCachedData = await cache.has(cacheKey);
+      if (refreshCache === false) {
+        const hasCachedData = await cache.has(cacheKey);
 
-      if (hasCachedData) {
-        const holdersData = await cache.get(cacheKey) as HoldersData;
-        const isValidHolders = holdersData instanceof HoldersData
-        
-        if (!isValidHolders) {
-          throw new Error('"holders" cache value is not instance of holdersData');
+        if (hasCachedData) {
+          const holdersData = await cache.get(cacheKey) as HoldersData;
+          const isValidHolders = holdersData instanceof HoldersData
+          
+          if (!isValidHolders) {
+            throw new Error('"holders" cache value is not instance of holdersData');
+          }
+
+          return new ServiceResponse(holdersData);
         }
-
-        return new ServiceResponse(holdersData);
       }
       
       const [solanaJsonBody, ...covalentJsonBodies] = await Promise.all([
@@ -83,8 +85,8 @@ export class MillionStatsService {
         polygonHolders  
       )
 
-      // cache holders data for 10 minutes
-      await cache.set(cacheKey, holdersData, 60 * 10);
+      // cache holders data for 11 minutes
+      await cache.set(cacheKey, holdersData, 11 * 60);
 
       return new ServiceResponse(holdersData);  
     } catch (error) {

@@ -71,7 +71,11 @@ export class SocialStatusDisplay {
 
   async getHoldersCount(): Promise<void> {
     try {
-      const resp = await MillionStatsService.getHolders();
+      // when the status is scheduled to update, it will also refresh the cache
+      // so that when the holders command is used, there will always be a cached
+      // value since the status is updated every 5 minutes and the holders cache
+      // TTL is set for 11 minutes 
+      const resp = await MillionStatsService.getHolders(true);
 
       if (resp.error) throw resp.error;
 

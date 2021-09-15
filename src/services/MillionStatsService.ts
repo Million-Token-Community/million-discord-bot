@@ -18,7 +18,7 @@ import {
 import axios, { AxiosResponse } from 'axios';
 
 export class MillionStatsService {
-  static solanaHoldersUrl = `https://api.solscan.io/token/holders?token=${ContractAddresses.SOLANA}&offset=0&size=20`;
+  static solanaHoldersUrl = `https://api.solscan.io/token/holders?token=${ContractAddresses.SOLANA}&offset=0&size=999999`;
   
   static uniswapHoldersUrl = createCovalentUrl(
     CovalentChainIds.ETHEREUM_MAINNET, 

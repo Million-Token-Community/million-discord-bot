@@ -46,7 +46,8 @@ module.exports = class HelloCommand extends SlashCommand {
               `Uniswap`,
               data.uniswap,
               false
-            );
+            )
+            .setFooter('Holder data providers:\nCovalent\nSolscan.io',);
           
         return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     } catch (error) {

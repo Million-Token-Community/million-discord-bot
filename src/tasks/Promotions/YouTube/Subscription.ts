@@ -1,13 +1,32 @@
 import nodeFetch, { Response } from 'node-fetch';
 import * as FormData from 'form-data';
-import {random as randomInt } from 'lodash';
 import { Channel, DataService } from '../../../services/YouTubeSubService';
 
+enum ChannelStatus {
+  VERIFIED = 'verified',
+  UNVERIFIED = 'unverified',
+  UNSUBSCRIBED = 'unsubscribed',
+  EXPIRED = 'expired'
+}
+
 export class YouTubeSubscription {
+  static renewChannelsInterval =  24 * 60 * 60 * 1e3; // daily
+  static maxSubInterval =       4 * 24 * 60 * 60 * 1e3  // 4 days
+
   constructor() {
     YouTubeSubscription.run();
+    setInterval(
+      () => {
+        YouTubeSubscription.run()
+      },
+      YouTubeSubscription.renewChannelsInterval
+    )
   }
-  static async sendPshbRequest(channelId: string, mode: string): Promise<Response | void> {
+
+  static async sendPshbRequest(
+    channelId: string, 
+    mode: 'subscribe' | 'unsubscribe'
+  ): Promise<Response | void> {
     try {
       const hostname = process.env.HOSTNAME;
 
@@ -34,7 +53,7 @@ export class YouTubeSubscription {
       });
 
     } catch(e) {
-      console.error(e);
+      console.error('PSHB request error:\n', e);    
     }
   }
 
@@ -42,12 +61,11 @@ export class YouTubeSubscription {
    * Get status subscription for given channel. Status available on
    * PubSubHubBub official webpage. Access it by GET request with
    * query parameters of callbackUrl and topicUrl and parse this page
-   * with RegExp. Statuses: 'verified', 'unverified' and 'unsubscribed'.
+   * with RegExp. Statuses: 'verified', 'unverified', 'unsubscribed' and 'expired'.
    * @param channelId 
    */
   static async getStatus(channelId: string): Promise<string | void> {
     try {
-
       const hostname = process.env.HOSTNAME;
 
       if (!hostname) {
@@ -70,30 +88,84 @@ export class YouTubeSubscription {
       }
 
     } catch(e) {
-      console.error(e);
+      console.error('Subscription status error:\n', e);
+    }
+  }
+
+  static async subscribe(name: string, channel_id: string): Promise<void> {
+    const resp = await YouTubeSubscription.sendPshbRequest(channel_id, 'subscribe');
+    const isSuccess = resp && resp.status === 202;
+
+    if (!isSuccess) throw `Error subscribing to "${name} (${channel_id})"`;
+
+    await DataService.addChannel(name, channel_id);
+  }
+
+  static async resubscribe(channel: Channel): Promise<void> {
+    const {id, name, channel_id} = channel;
+    const resp = await YouTubeSubscription.sendPshbRequest(channel_id, 'subscribe');
+    const isSuccess = resp && resp.status === 202;
+
+    if (!isSuccess) throw `Error resubscribing to "${name} (${channel_id})"`;
+
+    const subscribed_date = Date.now();
+    await DataService.editChannel(id, {subscribed_date});
+  }
+
+  static async unsubscribe(channel: Channel): Promise<void> {
+    const {id, name, channel_id} = channel;
+    const resp = await YouTubeSubscription.sendPshbRequest(channel_id, 'unsubscribe');
+    const isSuccess = typeof resp !== 'undefined' && resp?.ok;
+
+    if (!isSuccess) throw `Error unsubscribing to "${name} (${channel_id})"`;
+
+    await DataService.deleteChannel(id);
+  }
+
+  static async renew(channel: Channel): Promise<void> {
+    const {id,channel_id, name} = channel;
+    let resp: Response | void;
+
+    try {
+      resp = await YouTubeSubscription.sendPshbRequest(channel_id, 'unsubscribe');
+      if (typeof resp === 'undefined' || !resp.ok) throw 'Error unsubscribing';
+
+      resp = await YouTubeSubscription.sendPshbRequest(channel_id, 'subscribe');
+      if (typeof resp === 'undefined' || !resp.ok) throw 'Error subscribing';
+
+      const newSubscribeDate = Date.now();
+      await DataService.editChannel(id, {subscribed_date: newSubscribeDate});
+    } catch (error) {
+      console.log(`Error renewing channel "${name} (${channel_id})":\n`, error);
     }
   }
 
   /**
-   * Get all channels. Check random channel status of the subscription.
-   * If status is 'unverified' loop through all the channel and subscribe.
+   * Checks channels to see if renewal is required
    */
   static async run(): Promise<void> {
     try {
+      const currentDate = Date.now();
       const channels = await DataService.getChannels();
-      const random = randomInt(channels.length - 1);
-      const { channel_id } = channels[random];
-      const status = await this.getStatus(channel_id);
 
-      if (typeof status !== 'undefined' && status === 'unverified') {
-        channels.forEach(({ channel_id }: Channel) => {
-          this.sendPshbRequest(channel_id, 'subscribe');
-        });
-        console.log(`Subscribed for ${channels.length} channels.`);
-      } else {
-        console.log('Subscriptions are up to date.')
+      for (const channel of channels) {
+        const {channel_id, subscribed_date} = channel;
+        const subscribedDate = new Date(subscribed_date).getTime();
+        const subscribedInterval = currentDate - subscribedDate;
+        const exceededSubInterval = subscribedInterval >= this.maxSubInterval;
+
+        if (exceededSubInterval) {
+          await YouTubeSubscription.renew(channel);
+          continue;
+        } 
+
+        const status = await YouTubeSubscription.getStatus(channel_id);
+
+        if (status === ChannelStatus.UNVERIFIED) {
+          await YouTubeSubscription.resubscribe(channel);
+          continue;
+        }
       }
-
     } catch(e) {
       console.error(e);
     }

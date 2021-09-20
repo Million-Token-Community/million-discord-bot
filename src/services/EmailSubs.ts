@@ -1,12 +1,11 @@
 import * as Airtable from 'airtable';
 import {FieldSet} from 'airtable/lib/field_set';
 import {QueryParams} from 'airtable/lib/query_params';
+import {baseId, apiKey} from '../config/airtable';
 
 export class EmailSubsService {
-  static readonly table = new Airtable({
-      apiKey: process.env.AIRTABLE_API_KEY
-    })
-    .base('apptPaK48OTCUN7jJ')('subs');
+  static readonly table = new Airtable({apiKey: apiKey})
+    .base(baseId)('email_subs');
 
   static async getSubsCount(): Promise<number> {
     const queryParams: QueryParams<FieldSet> = {

@@ -4,6 +4,7 @@ import {QueryParams} from 'airtable/lib/query_params';
 import Record from 'airtable/lib/record';
 import {ShillMessageAddon} from './ShillMessageAddon';
 import Table from 'airtable/lib/table';
+import {baseId, apiKey} from '../config/airtable';
 
 export interface ShillMessage {
   id: string;
@@ -20,13 +21,11 @@ class _ShillMessageDataService {
 
   async connectTable(): Promise<void> {
     try {
-    this.table = await new Airtable({
-      apiKey: process.env.AIRTABLE_API_KEY || 'opop'
-    })
-    .base('apph8Ekdivj4iBcKd')('shill_messages');
-  } catch (error) {
+      this.table = await new Airtable({apiKey: apiKey})
+        .base(baseId)('shill_messages');
+    } catch (error) {
       console.log('SHILL MESSAGE DATA SERVCE ERROR', error);
-  }
+    }
   }
   
 

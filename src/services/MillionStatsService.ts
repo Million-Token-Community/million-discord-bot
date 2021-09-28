@@ -13,11 +13,13 @@ import {
   ContractAddresses, 
   CovalentChainIds,
   CovalentJsonBody,
-  SolscanJsonBody
+  SolscanJsonBody,
+  EthplorerJsonBody
 } from '../types';
 import axios, { AxiosResponse } from 'axios';
 
 export class MillionStatsService {
+  static ethplorerUrl = `https://api.ethplorer.io/getTokenInfo/0x6b4c7a5e3f0b99fcd83e9c089bddd6c7fce5c611?apiKey=freekey`;
   static solanaHoldersUrl = `https://api.solscan.io/token/holders?token=${ContractAddresses.SOLANA}&offset=0&size=999999`;
   
   static uniswapHoldersUrl = createCovalentUrl(
@@ -45,6 +47,8 @@ export class MillionStatsService {
   static async getHolders(refreshCache = false): Promise<ServiceResponse<HoldersData>> {
     try {
       const cacheKey = 'holders';
+
+      // if refreshCache is false, get cached value if available
       if (refreshCache === false) {
         const hasCachedData = await cache.has(cacheKey);
 
@@ -60,27 +64,34 @@ export class MillionStatsService {
         }
       }
       
-      const [solanaJsonBody, ...covalentJsonBodies] = await Promise.all([
-        // SolScan response
+      const [ 
+        ethplorerJsonBody, 
+        solscanJsonBody, 
+        ...covalentJsonBodies
+      ] = await Promise.all([
+        // Ethplorer request
+        axios.get(this.ethplorerUrl),
+
+        // SolScan request
         axios.get(this.solanaHoldersUrl),
 
         // the rest will be from CovalentHQ
-        axios.get(this.uniswapHoldersUrl),
+        // axios.get(this.uniswapHoldersUrl),
         axios.get(this.bscHoldersUrl),
         axios.get(this.polygonHoldersUrl)
       ]);
 
-      const solanaHolders = this.getHoldersFromSolscanJson(solanaJsonBody.data);
+      const ethereumHolders = this.getHoldersFromEthplorerJson(ethplorerJsonBody.data);
+      const solanaHolders = this.getHoldersFromSolscanJson(solscanJsonBody.data);
 
       const [
-        uniswapHolders,
         bscHolders,
         polygonHolders
       ] = this.getHoldersFromCovalentJson(covalentJsonBodies);
         
       const holdersData = new HoldersData(
         solanaHolders,
-        uniswapHolders,
+        ethereumHolders,
         bscHolders,
         polygonHolders  
       )
@@ -90,6 +101,10 @@ export class MillionStatsService {
 
       return new ServiceResponse(holdersData);  
     } catch (error) {
+      if (error.isAxiosError === true) {
+        return new ServiceResponse(null, error?.response?.data);
+      }
+
       return new ServiceResponse(null, error);
     }
   }
@@ -225,5 +240,16 @@ export class MillionStatsService {
     }
 
     return count;
+  }
+
+  // get holders from ethplorer
+  static getHoldersFromEthplorerJson(json: EthplorerJsonBody): number {
+    const {holdersCount} = json;
+
+    if (!isFinite(holdersCount)) {
+      throw new Error('holdersCount should be a number')
+    }
+
+    return holdersCount;
   }
 }

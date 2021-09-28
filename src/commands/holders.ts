@@ -33,6 +33,11 @@ module.exports = class HelloCommand extends SlashCommand {
               false
             )
             .addField(
+              `Ethereum`,
+              data.ethereum,
+              false
+            )
+            .addField(
               'Polygon',
               data.polygon,
               false
@@ -42,12 +47,7 @@ module.exports = class HelloCommand extends SlashCommand {
               data.solana,
               false
             )
-            .addField(
-              `Uniswap`,
-              data.uniswap,
-              false
-            )
-            .setFooter('Holder data providers:\nCovalent\nSolscan.io',);
+            .setFooter('Holder data providers:\nCovalentHQ.com\nEthplorer.io\nSolscan.io');
           
         return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     } catch (error) {

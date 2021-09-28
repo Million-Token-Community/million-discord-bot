@@ -23,10 +23,14 @@ export interface SolscanJsonBody {
 }
 
 export interface CovalentJsonBody {
-data: {
-  pagination:
-   {
-     total_count: number
-   }
+  data: {
+    pagination:
+    {
+      total_count: number
+    }
+  }
 }
+
+export interface EthplorerJsonBody {
+  holdersCount: number
 }

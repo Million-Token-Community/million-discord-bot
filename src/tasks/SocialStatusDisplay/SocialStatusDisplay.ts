@@ -85,7 +85,7 @@ export class SocialStatusDisplay {
         `Holders ${holdersCount}`
       );
     } catch (error) {
-      console.log('Holders count error: \n', error);
+      console.trace('Holders count error: \n', error);
     }
   }
 

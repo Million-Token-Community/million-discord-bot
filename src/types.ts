@@ -3,7 +3,7 @@ export enum ContractAddresses{
   BINANCE_SMART_CHAIN     = '0xBF05279F9Bf1CE69bBFEd670813b7e431142Afa4',
   POLYGON = '0x5647Fe4281F8F6F01E84BCE775AD4b828A7b8927',
   SOLANA = 'FiCiuX9DetEE89PgRAU1hmoptnem8b1fkpEq8PGYTYkd',
-  KUSANA = '0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605'
+  KUSAMA = '0x95bf7e307bc1ab0ba38ae10fc27084bc36fcd605'
 }
 
 export enum CovalentChainIds {

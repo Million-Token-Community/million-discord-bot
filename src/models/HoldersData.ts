@@ -3,7 +3,7 @@ interface HolderCounts {
   ethereum: number,
   bsc:      number,
   polygon:  number,
-  kusana:   number,
+  kusama:   number,
 };
 
 export class HoldersData {
@@ -11,7 +11,7 @@ export class HoldersData {
   public bsc:           string;
   public polygon:       string;
   public solana:        string;
-  public kusana:        string;
+  public kusama:        string;
   public totalHodlers:  string; 
 
   constructor(holderCounts: HolderCounts) {
@@ -24,7 +24,7 @@ export class HoldersData {
       this[chain] = numFormatter.format(count);
       totalHodlers += count;
     }
-    
+
     this.totalHodlers = numFormatter.format(totalHodlers);
   }
 }

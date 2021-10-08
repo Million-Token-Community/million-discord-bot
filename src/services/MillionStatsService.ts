@@ -37,6 +37,11 @@ export class MillionStatsService {
     ContractAddresses.POLYGON
   );
 
+  static kusamaHoldersUrl = createCovalentUrl(
+    CovalentChainIds.MOONRIVER,
+    ContractAddresses.KUSAMA
+  );
+
   static defaultFetchOptions: RequestInit = {
     method: 'GET',
     headers: {
@@ -78,7 +83,8 @@ export class MillionStatsService {
         // the rest will be from CovalentHQ
         // axios.get(this.uniswapHoldersUrl),
         axios.get(this.bscHoldersUrl),
-        axios.get(this.polygonHoldersUrl)
+        axios.get(this.polygonHoldersUrl),
+        axios.get(this.kusamaHoldersUrl)
       ]);
 
       const ethereumHolders = this.getHoldersFromEthplorerJson(ethplorerJsonBody.data);
@@ -86,15 +92,17 @@ export class MillionStatsService {
 
       const [
         bscHolders,
-        polygonHolders
+        polygonHolders,
+        kusamaHolders
       ] = this.getHoldersFromCovalentJson(covalentJsonBodies);
         
-      const holdersData = new HoldersData(
-        solanaHolders,
-        ethereumHolders,
-        bscHolders,
-        polygonHolders  
-      )
+      const holdersData = new HoldersData({
+        ethereum: ethereumHolders,
+        solana: solanaHolders,
+        bsc: bscHolders,
+        polygon: polygonHolders,
+        kusama: kusamaHolders
+      });
 
       // cache holders data for 11 minutes
       await cache.set(cacheKey, holdersData, 11 * 60);

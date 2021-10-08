@@ -38,6 +38,10 @@ module.exports = class HelloCommand extends SlashCommand {
               false
             )
             .addField(
+              'Kusama',
+              data.kusama
+            )
+            .addField(
               'Polygon',
               data.polygon,
               false

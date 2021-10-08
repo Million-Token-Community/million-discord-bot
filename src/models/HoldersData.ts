@@ -1,23 +1,30 @@
+interface HolderCounts {
+  solana:   number,
+  ethereum: number,
+  bsc:      number,
+  polygon:  number,
+  kusana:   number,
+};
+
 export class HoldersData {
-  public ethereum: string;
-  public bsc: string;
-  public polygon: string;
-  public solana: string
-  public totalHodlers: string;
+  public ethereum:      string;
+  public bsc:           string;
+  public polygon:       string;
+  public solana:        string;
+  public kusana:        string;
+  public totalHodlers:  string; 
 
-  constructor(
-    solana: number,
-    ethereum: number,
-    bsc: number,
-    polygon: number
-  ) {
-    const numFormatter = new Intl.NumberFormat('en-US');  
-    const totalHodlers = solana + ethereum + bsc + polygon;
+  constructor(holderCounts: HolderCounts) {
+    const numFormatter  = new Intl.NumberFormat('en-US');  
+    
+    let totalHodlers = 0;
 
-    this.solana = numFormatter.format(solana);
-    this.ethereum = numFormatter.format(ethereum);
-    this.bsc = numFormatter.format(bsc);
-    this.polygon = numFormatter.format(polygon);
+    for (const chain in holderCounts) {
+      const count = holderCounts[chain];
+      this[chain] = numFormatter.format(count);
+      totalHodlers += count;
+    }
+    
     this.totalHodlers = numFormatter.format(totalHodlers);
   }
 }

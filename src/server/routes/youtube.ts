@@ -1,6 +1,6 @@
 import * as express from "express";
 import { Client, TextChannel } from "discord.js";
-import { channelIds } from "../../../channel-IDs";
+import { channelIds } from "../../channel-IDs";
 
 export interface RawPublication {
   [key: string]: unknown
@@ -69,7 +69,7 @@ youtube.post('/notification', ({ body, app }, res) => {
         const msg = `${title} released new video!!\n` +
                     `Published: ${pubDate.toLocaleString('en-GB', { timeZone: 'UTC', timeZoneName: 'short' })}\n` +
                     `Updated: ${upDate.toLocaleString('en-GB', { timeZone: 'UTC', timeZoneName: 'short' })}\n` +
-                    `${videoUrl}`;
+                    `<${videoUrl}>`;
 
         await discordChannel.send(msg);
       } catch(e) {

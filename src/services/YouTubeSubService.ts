@@ -2,6 +2,8 @@ import * as Airtable from 'airtable';
 import { FieldSet } from 'airtable/lib/field_set';
 import { QueryParams } from 'airtable/lib/query_params';
 import Record from 'airtable/lib/record';
+import Table from 'airtable/lib/table';
+import {baseId, apiKey} from '../config/airtable';
 
 export interface Channel extends Fields {
   id: string
@@ -10,15 +12,26 @@ export interface Channel extends Fields {
 export interface Fields {
   name: string
   channel_id: string
+  subscribed_date: string
 }
 
-export class DataService {
-  static readonly table = new Airtable({
-      apiKey: process.env.AIRTABLE_API_KEY
-    })
-    .base('appBVyMlXmTPsLPYv')('youtube_channels');
+class _DataService {
+  private table: Table<FieldSet>;
 
-  static async getChannels(): Promise<Channel[]> {
+  constructor() {
+    this.connectTable();
+  }
+
+  async connectTable(): Promise<void> {
+    try {
+      this.table = new Airtable({apiKey: apiKey})
+        .base(baseId)('youtube_channels');
+    } catch (error) {
+      console.log('Error connecting to database', error);
+    }
+  }
+
+  async getChannels(): Promise<Channel[]> {
     const items: Channel[] = [];
 
     const queryParams: QueryParams<FieldSet> = {
@@ -36,12 +49,12 @@ export class DataService {
     return items;
   }
 
-  static async getChannelById(id: string): Promise<Channel> {
+  async getChannelById(id: string): Promise<Channel> {
     const record = await this.table.find(id);
     return this.channel(record);
   }
 
-  static async getChannelByName(name: string): Promise<Channel | void> {
+  async getChannelByName(name: string): Promise<Channel | void> {
     const records = await this.table
       .select({ filterByFormula: `{name} = '${name}'` })
       .firstPage();
@@ -50,15 +63,10 @@ export class DataService {
       return;
     }
 
-    const { id, fields } = record;
-    return {
-      id,
-      name: fields.name,
-      channel_id: fields.channel_id
-    }
+    return this.channel(record);
   }
 
-  static async getChannelByChannelId(channel_id: string): Promise<Channel | void> {
+  async getChannelByChannelId(channel_id: string): Promise<Channel | void> {
     const records = await this.table
       .select({ filterByFormula: `{channel_id} = '${channel_id}'` })
       .firstPage();
@@ -67,46 +75,54 @@ export class DataService {
       return;
     }
 
-    const { id, fields } = record;
-    return {
-      id,
-      name: fields.name,
-      channel_id: fields.channel_id
-    }
+    return this.channel(record);
   }
 
-  static async isExists(name: string, channel_id: string): Promise<boolean> {
+  async isExists(name: string, channel_id: string): Promise<boolean> {
     const nameExists = await this.getChannelByName(name);
     
     const channelIsExists = await this.getChannelByChannelId(channel_id);
     return (nameExists || channelIsExists) ? true : false;
   }
 
-  static async addChannel(name: string, channel_id: string): Promise<Channel> {
-    const record = await this.table.create({ name, channel_id });
+  async addChannel(name: string, channel_id: string): Promise<Channel> {
+    const subscribed_date = new Date().getTime();
+    const record = await this.table.create({ name, channel_id, subscribed_date });
     return this.channel(record);
   }
 
-  static async editChannel(
+  /**
+   * 
+   * @param id Record ID
+   * @param fields Fields to update
+   * @returns 
+   */
+  async editChannel(
     id: string, 
     fields: {
       name?: string, 
-      channel_id?: string
+      channel_id?: string,
+      subscribed_date?: number 
   }): Promise<Channel> {
     const record = await this.table.update(id, fields)
     return this.channel(record);
   }
 
-  static async deleteChannel(id: string): Promise<Channel> {
+  async deleteChannel(id: string): Promise<Channel> {
     const record = await this.table.destroy(id);
     return this.channel(record);
   }
 
-  static channel(record: Record<FieldSet>): Channel {
+  channel(record: Record<FieldSet>): Channel {
+    const { id, fields } = record;
+
     return {
-      id: record.getId(),
-      name: record.get('name') as string,
-      channel_id: record.get('channel_id') as string
+      id: id,
+      name: fields.name as string,
+      channel_id: fields.channel_id as string,
+      subscribed_date: fields.subscribed_date as string
     }
   }
 }
+
+export const DataService = new _DataService();

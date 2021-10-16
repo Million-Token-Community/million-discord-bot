@@ -1,5 +1,6 @@
-import { SlashCommand } from 'slash-create';
+import { CommandContext, SlashCommand} from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
+import * as Discord from'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {
@@ -13,21 +14,52 @@ module.exports = class HelloCommand extends SlashCommand {
     this.filePath = __filename;
   }
 
-  async run(ctx) {
+  async run(ctx: CommandContext) {
+    let exampleEmbed;
     try {
-      const resp = await MillionStatsService.getHolders();
+      const {data, hasError, error} = await MillionStatsService.getHolders();
+      if (hasError) throw error;
 
-      if (resp.hasError) throw resp.error;
-      
-      const numFormatter = new Intl.NumberFormat('en-US');
-      const holders = numFormatter.format(resp.data);      
-
-      return await ctx.send(
-        `<:pepeholdmm:861835461458657331> Current holders count is **${holders}**.`,
-      );
+      exampleEmbed = new Discord.MessageEmbed()
+            .setColor('#C51162')//Pink50 (A700)
+            .addField(
+              `Total MM Hodlers <:pepeholdmm:861835461458657331>`, 
+              `${data.totalHodlers}`, 
+              false
+            )
+            .addField(
+              'BSC',
+              data.bsc,
+              false
+            )
+            .addField(
+              `Ethereum`,
+              data.ethereum,
+              false
+            )
+            .addField(
+              'Kusama',
+              data.kusama
+            )
+            .addField(
+              'Polygon',
+              data.polygon,
+              false
+            )
+            .addField(
+              'Solana',
+              data.solana,
+              false
+            )
+            .setFooter('Holder data providers:\nCovalentHQ.com\nEthplorer.io\nSolscan.io');
+          
+        return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     } catch (error) {
       console.log('"holders" command error: \n', error);
-      return await ctx.send(`Something went wrong - try again a bit later.`);
+      exampleEmbed = new Discord.MessageEmbed()
+      .setColor('#C51162')//Pink50 (A700)
+      .addField(`Something went wrong`, `try again a bit later.`)
+      return await ctx.send({embeds: [exampleEmbed], ephemeral: true});
     }
   }
 };

@@ -1,13 +1,15 @@
 export const devChannelIds = {
-  lounge: '870409423825276995',
-  suggestion_box: '870438625219842090',
-  botCommandsChannel: '870419672774868995',
-  twitterStats: '875329757162639380',
-  redditStats: '875518239906598922',
-  emailSubsChannel: '875776790734454805',
-  holdersChannel: '875776895566876703',
-  price: '881143911404412968',
-  telegramCount: '881145014481199144',
-  youTubePromotion: '881126112489508888',
-  facebook: ''
+  lounge: '882029588937572427',
+  suggestion_box: '882029588937572429',
+  botCommandsChannel: '882029589134725187',
+  devBotCommandsChannel: '870759676848013332',
+  twitterStats: '875292559314915359',
+  redditStats: '875512962754961448',
+  emailSubsChannel: '875665191197618176',
+  holdersChannel: '875774832887857193',
+  price: '876778084865568869',
+  telegramCount: '876802098333909022',
+  youTubePromotion: '885463886487252993',
+  facebook: '',
+  botCommand_DevChannel: '885463886487252993'
 }

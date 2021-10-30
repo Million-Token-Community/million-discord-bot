@@ -1,13 +1,13 @@
 import nodeFetch, {RequestInit} from 'node-fetch';
 import {hasJsonContentType} from '../utils'
-import {ServiceResponse} from './ServiceResponse';
+import {ServiceResponse} from '../models/ServiceResponse';
 
 export class TelegramService {
   static readonly baseUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
                          
   static async getMemberCount(): Promise<ServiceResponse<number>> {
     try {
-      const url = `${this.baseUrl}/getChatMemberCount?chat_id=@millionjacuzzibar`;
+      const url = `${this.baseUrl}/getChatMemberCount?chat_id=@MillionTokensCommunity`;
       const fetchOptns: RequestInit = {
         method: 'GET',
         headers: {
@@ -21,6 +21,9 @@ export class TelegramService {
       const isValidResponse = isRespOk && hasJson;
       
       if (!isValidResponse) {
+        const text = await resp.text();
+        console.log(text);
+        
         throw new Error('Response is not valid.');
       }
 

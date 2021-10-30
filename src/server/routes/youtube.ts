@@ -69,7 +69,7 @@ youtube.post('/notification', ({ body, app }, res) => {
         const msg = `${title} released new video!!\n` +
                     `Published: ${pubDate.toLocaleString('en-GB', { timeZone: 'UTC', timeZoneName: 'short' })}\n` +
                     `Updated: ${upDate.toLocaleString('en-GB', { timeZone: 'UTC', timeZoneName: 'short' })}\n` +
-                    `${videoUrl}`;
+                    `<${videoUrl}>`;
 
         await discordChannel.send(msg);
       } catch(e) {

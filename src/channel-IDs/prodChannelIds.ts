@@ -2,6 +2,7 @@ export const prodChannelIds = {
   lounge: '870409423825276995',
   suggestion_box: '870438625219842090',
   botCommandsChannel: '870419672774868995',
+  devBotCommandsChannel: '870759676848013332',
   twitterStats: '875329757162639380',
   redditStats: '875518239906598922',
   emailSubsChannel: '875776790734454805',

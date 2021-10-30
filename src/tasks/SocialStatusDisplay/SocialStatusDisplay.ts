@@ -33,9 +33,10 @@ export class SocialStatusDisplay {
     } 
   }
 
-  async setChannelName(id: string, name: string): Promise<void> {
+  async setChannelName(id: string, statName: string, value: string | number): Promise<void> {
     const channel = await discordClient.channels.fetch(id) as VoiceChannel;
-    await channel.setName(name);
+    const formattedName = `${statName} | ${value}`;
+    await channel.setName(formattedName);
   }
 
   async getTwitterCount(): Promise<void> {
@@ -44,7 +45,8 @@ export class SocialStatusDisplay {
 
       await this.setChannelName(
         channelIds.twitterStats,
-        this.twitterName + followers
+        this.twitterName,
+        followers
       );
     } catch (error) {
       console.log('Twitter followers error: ',error);   
@@ -54,7 +56,7 @@ export class SocialStatusDisplay {
   async getRedditCount(): Promise<void> {
     try {
       const subs = await this.rService.getMMSubCount();
-      await this.setChannelName(channelIds.redditStats, `Reddit ${subs}`);
+      await this.setChannelName(channelIds.redditStats, `Reddit`, subs);
     } catch (error) {
       console.log('Reddit subs error: ', error);
     }
@@ -63,7 +65,7 @@ export class SocialStatusDisplay {
   async getEmailSubCount(): Promise<void> {
     try {
       const count = await EmailSubsService.getSubsCount();
-      await this.setChannelName(channelIds.emailSubsChannel, `EmailSubs ${count}`);
+      await this.setChannelName(channelIds.emailSubsChannel, `EmailSubs`, count);
     } catch (error) {
       console.log('Email subs error:', error);
     }
@@ -71,13 +73,22 @@ export class SocialStatusDisplay {
 
   async getHoldersCount(): Promise<void> {
     try {
-      const resp = await MillionStatsService.getHolders();
+      // when the status is scheduled to update, it will also refresh the cache
+      // so that when the holders command is used, there will always be a cached
+      // value since the status is updated every 5 minutes and the holders cache
+      // TTL is set for 11 minutes 
+      const resp = await MillionStatsService.getHolders(true);
 
       if (resp.error) throw resp.error;
 
-      await this.setChannelName(channelIds.holdersChannel, `Holders ${resp.data}`);
+      const holdersCount = resp.data.totalHodlers.replace(',', '');
+      await this.setChannelName(
+        channelIds.holdersChannel, 
+        `Holders`,
+        holdersCount
+      );
     } catch (error) {
-      console.log('Holders count error: \n', error);
+      console.trace('Holders count error: \n', error);
     }
   }
 
@@ -88,7 +99,7 @@ export class SocialStatusDisplay {
       if (resp.hasError) throw resp.error;
 
       const {price} = resp.data;
-      await this.setChannelName(channelIds.price, `MM Price $${price}`);
+      await this.setChannelName(channelIds.price, `MM Price`, price);
     } catch (error) {
       console.log('Error updating price channel: \n', error);
     }
@@ -101,7 +112,11 @@ export class SocialStatusDisplay {
 
       if (resp.hasError) throw resp.error;
 
-      await this.setChannelName(channelIds.telegramCount, `Telegram ${membersCount}`);
+      await this.setChannelName(
+        channelIds.telegramCount,
+        `Telegram`,
+        membersCount
+      );
     } catch (error) {
       console.log('Error updating Telegram Count:\n', error);
     }

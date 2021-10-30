@@ -1,76 +1,125 @@
-import fetch, {Response, RequestInit} from 'node-fetch';
+import fetch, {//Response, 
+  RequestInit} from 'node-fetch';
 import { cache } from '../cache';
-import {formatPercentageChange, hasJsonContentType} from '../utils';
-import {ServiceResponse} from './ServiceResponse';
+import {
+  formatPercentageChange, 
+  createCovalentUrl
+} from '../utils';
+import {ServiceResponse} from '../models/ServiceResponse';
 import {isFinite} from 'lodash';
 import {PriceDataMM} from './PriceDataMM';
+import { HoldersData } from '../models/HoldersData';
+import {
+  ContractAddresses, 
+  CovalentChainIds,
+  CovalentJsonBody,
+  SolscanJsonBody,
+  EthplorerJsonBody
+} from '../types';
+import axios, { AxiosResponse } from 'axios';
 
 export class MillionStatsService {
-  static async getHolders(): Promise<ServiceResponse<number>> {
+  static ethplorerUrl = `https://api.ethplorer.io/getTokenInfo/0x6b4c7a5e3f0b99fcd83e9c089bddd6c7fce5c611?apiKey=freekey`;
+  static solanaHoldersUrl = `https://api.solscan.io/token/holders?token=${ContractAddresses.SOLANA}&offset=0&size=999999`;
+  
+  static uniswapHoldersUrl = createCovalentUrl(
+    CovalentChainIds.ETHEREUM_MAINNET, 
+    ContractAddresses.UNISWAP
+  );
+
+  static bscHoldersUrl = createCovalentUrl(
+    CovalentChainIds.BINANCE_SMART_CHAIN, 
+    ContractAddresses.BINANCE_SMART_CHAIN
+  );
+
+  static polygonHoldersUrl = createCovalentUrl(
+    CovalentChainIds.POLYGON_MAINNET, 
+    ContractAddresses.POLYGON
+  );
+
+  static kusamaHoldersUrl = createCovalentUrl(
+    CovalentChainIds.MOONRIVER,
+    ContractAddresses.KUSAMA
+  );
+
+  static avalancheHoldersUrl = createCovalentUrl(
+    CovalentChainIds.AVALANCHE,
+    ContractAddresses.AVALANCHE
+  );
+
+  static defaultFetchOptions: RequestInit = {
+    method: 'GET',
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+    },
+  };
+
+  static async getHolders(refreshCache = false): Promise<ServiceResponse<HoldersData>> {
     try {
       const cacheKey = 'holders';
-      const hasCachedData = await cache.has(cacheKey);
-      let holders: number;
-      let isValidHolders: boolean;
 
-      if (hasCachedData) {
-        holders = await cache.get(cacheKey) as number;
-        isValidHolders = isFinite(holders);
-        
-        if (!isValidHolders) {
-          throw new Error('"holders" cache value is not a number');
+      // if refreshCache is false, get cached value if available
+      if (refreshCache === false) {
+        const hasCachedData = await cache.has(cacheKey);
+
+        if (hasCachedData) {
+          const holdersData = await cache.get(cacheKey) as HoldersData;
+          const isValidHolders = holdersData instanceof HoldersData
+          
+          if (!isValidHolders) {
+            throw new Error('"holders" cache value is not instance of holdersData');
+          }
+
+          return new ServiceResponse(holdersData);
         }
-
-        return new ServiceResponse(holders);
       }
       
-      const ethExplorerUrl = `https://api.ethplorer.io/getAddressInfo/0x6b4c7a5e3f0b99fcd83e9c089bddd6c7fce5c611?apiKey=freekey`;
-      const covalentUrl = `https://api.covalenthq.com/v1/56/tokens/0xBF05279F9Bf1CE69bBFEd670813b7e431142Afa4/token_holders/?key=${process.env.COVALENT_API_KEY}&page-size=1`;
-      const init = {
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-        },
-      };
+      const [ 
+        ethplorerJsonBody, 
+        solscanJsonBody, 
+        ...covalentJsonBodies
+      ] = await Promise.all([
+        // Ethplorer request
+        axios.get(this.ethplorerUrl),
 
-      const [ethExplorerResp, covalentResp]: Response[] = await Promise.all([
-        fetch(ethExplorerUrl, init),
-        fetch(covalentUrl, init),
+        // SolScan request
+        axios.get(this.solanaHoldersUrl),
+
+        // the rest will be from CovalentHQ
+        axios.get(this.bscHoldersUrl),
+        axios.get(this.polygonHoldersUrl),
+        axios.get(this.kusamaHoldersUrl),
+        axios.get(this.avalancheHoldersUrl)
       ]);
 
-      const isEthContentJSON = hasJsonContentType(ethExplorerResp);
-      const isCovalentContentJSON = hasJsonContentType(covalentResp);
-      const isValidJSON = isEthContentJSON && isCovalentContentJSON;
+      const ethereumHolders = this.getHoldersFromEthplorerJson(ethplorerJsonBody.data);
+      const solanaHolders = this.getHoldersFromSolscanJson(solscanJsonBody.data);
 
-      if (!isValidJSON) throw new Error ('API responses should return JSON');
+      const [
+        bscHolders,
+        polygonHolders,
+        kusamaHolders,
+        avalancheHolders
+      ] = this.getHoldersFromCovalentJson(covalentJsonBodies);
+        
+      const holdersData = new HoldersData({
+        ethereum: ethereumHolders,
+        solana: solanaHolders,
+        bsc: bscHolders,
+        polygon: polygonHolders,
+        kusama: kusamaHolders,
+        avalanche: avalancheHolders
+      });
 
-      const [ethExplorerBody, covalentBody] = await Promise.all([
-        ethExplorerResp.json(),
-        covalentResp.json(),
-      ]);
+      // cache holders data for 11 minutes
+      await cache.set(cacheKey, holdersData, 11 * 60);
 
-      const uniSwapHolders = ethExplorerBody
-        ?.tokenInfo
-        ?.holdersCount as number;
-
-      const bscHolders = covalentBody
-        ?.data
-        ?.pagination
-        ?.total_count as number;
-
-      const isValidUniSwapHolders = isFinite(uniSwapHolders);
-      const isValidBscHolders = isFinite(bscHolders);
-      isValidHolders = isValidUniSwapHolders && isValidBscHolders;
-
-      if (!isValidHolders) {
-        const msg = 'API response(s) did not return a valid number for holders';
-        throw new Error(msg);
+      return new ServiceResponse(holdersData);  
+    } catch (error) {
+      if (error.isAxiosError === true) {
+        return new ServiceResponse(null, error?.response?.data);
       }
 
-      holders = uniSwapHolders + bscHolders;
-      await cache.set(cacheKey, holders, 30);
-
-      return new ServiceResponse(holders);  
-    } catch (error) {
       return new ServiceResponse(null, error);
     }
   }
@@ -152,16 +201,70 @@ export class MillionStatsService {
       } catch (error) {
         throw new Error('Error parsing price from api into float');
       }
-      
-
-     
-    
     
     } catch (error) {
       return new ServiceResponse(null, error);
     }
-
   }
 
+  /**
+   * Returns an array of holder counts from each CovalentHQ JSON response
+   * @param jsonBodies 
+   * @returns 
+   */
+  static getHoldersFromCovalentJson(jsonBodies: AxiosResponse<CovalentJsonBody>[]): number[] {
+    const holders = jsonBodies.map((body) => {
+      const holdersCount =  body
+        ?.data
+        ?.data
+        ?.pagination
+        ?.total_count;
 
+      if (!isFinite(holdersCount)) {
+        throw new Error('Expected holders count from CovalentHQ API to be a number');
+      }
+      
+      return holdersCount;
+    });
+
+    return holders;
+  }
+
+  /**
+   * 
+   * @param json 
+   */
+  static getHoldersFromSolscanJson(json: SolscanJsonBody): number {
+    const owners = json.data.result;
+    let count = 0;
+
+    if (typeof owners === 'undefined') {
+      throw new Error('Invalid results from Solscan');
+    }
+
+    for (const owner of owners) {
+      const mmAmount = owner?.uiAmount;
+
+      if (!isFinite(mmAmount)) {
+        throw new Error('mmAmount should be a number')
+      }
+
+      if (mmAmount > 0) {
+        count +=1;
+      }
+    }
+
+    return count;
+  }
+
+  // get holders from ethplorer
+  static getHoldersFromEthplorerJson(json: EthplorerJsonBody): number {
+    const {holdersCount} = json;
+
+    if (!isFinite(holdersCount)) {
+      throw new Error('holdersCount should be a number')
+    }
+
+    return holdersCount;
+  }
 }

@@ -1,5 +1,6 @@
 import {Response} from 'node-fetch';
 import {MessageEmbedOptions, CommandContext} from 'slash-create';
+import {ContractAddresses, CovalentChainIds} from './types';
 
 export function formatLargeNumber(number: number): string {
   const num = Math.abs(Number(number));
@@ -75,4 +76,14 @@ export function hasAllowedRoles(
   }
 
   return isAllowed;
+}
+
+/**
+   * Creates the correct CovalentHQ URL string for each exchange 
+   * @param chainId
+   * @param address 
+   * @returns 
+   */
+export function createCovalentUrl(chainId: CovalentChainIds, address: ContractAddresses): string {
+  return `https://api.covalenthq.com/v1/${chainId}/tokens/${address}/token_holders/?key=${process.env.COVALENT_API_KEY}&page-size=1`;
 }

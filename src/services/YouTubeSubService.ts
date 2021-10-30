@@ -3,6 +3,7 @@ import { FieldSet } from 'airtable/lib/field_set';
 import { QueryParams } from 'airtable/lib/query_params';
 import Record from 'airtable/lib/record';
 import Table from 'airtable/lib/table';
+import {baseId, apiKey} from '../config/airtable';
 
 export interface Channel extends Fields {
   id: string
@@ -11,6 +12,7 @@ export interface Channel extends Fields {
 export interface Fields {
   name: string
   channel_id: string
+  subscribed_date: string
 }
 
 class _DataService {
@@ -22,15 +24,11 @@ class _DataService {
 
   async connectTable(): Promise<void> {
     try {
-      this.table = new Airtable({
-        apiKey: process.env.AIRTABLE_API_KEY
-      })
-      .base('appBVyMlXmTPsLPYv')('youtube_channels');
+      this.table = new Airtable({apiKey: apiKey})
+        .base(baseId)('youtube_channels');
     } catch (error) {
       console.log('Error connecting to database', error);
-      
     }
-    
   }
 
   async getChannels(): Promise<Channel[]> {
@@ -65,12 +63,7 @@ class _DataService {
       return;
     }
 
-    const { id, fields } = record;
-    return {
-      id,
-      name: fields.name,
-      channel_id: fields.channel_id
-    }
+    return this.channel(record);
   }
 
   async getChannelByChannelId(channel_id: string): Promise<Channel | void> {
@@ -82,12 +75,7 @@ class _DataService {
       return;
     }
 
-    const { id, fields } = record;
-    return {
-      id,
-      name: fields.name,
-      channel_id: fields.channel_id
-    }
+    return this.channel(record);
   }
 
   async isExists(name: string, channel_id: string): Promise<boolean> {
@@ -98,15 +86,23 @@ class _DataService {
   }
 
   async addChannel(name: string, channel_id: string): Promise<Channel> {
-    const record = await this.table.create({ name, channel_id });
+    const subscribed_date = new Date().getTime();
+    const record = await this.table.create({ name, channel_id, subscribed_date });
     return this.channel(record);
   }
 
+  /**
+   * 
+   * @param id Record ID
+   * @param fields Fields to update
+   * @returns 
+   */
   async editChannel(
     id: string, 
     fields: {
       name?: string, 
-      channel_id?: string
+      channel_id?: string,
+      subscribed_date?: number 
   }): Promise<Channel> {
     const record = await this.table.update(id, fields)
     return this.channel(record);
@@ -118,10 +114,13 @@ class _DataService {
   }
 
   channel(record: Record<FieldSet>): Channel {
+    const { id, fields } = record;
+
     return {
-      id: record.getId(),
-      name: record.get('name') as string,
-      channel_id: record.get('channel_id') as string
+      id: id,
+      name: fields.name as string,
+      channel_id: fields.channel_id as string,
+      subscribed_date: fields.subscribed_date as string
     }
   }
 }

@@ -1,6 +1,6 @@
 import { CommandContext, SlashCommand } from 'slash-create';
 import {MillionStatsService} from '../services/MillionStatsService';
-const Discord = require('discord.js');
+import * as Discord from 'discord.js';
 
 module.exports = class HelloCommand extends SlashCommand {
   constructor(creator) {

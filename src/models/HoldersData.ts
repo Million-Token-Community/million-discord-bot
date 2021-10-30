@@ -1,9 +1,10 @@
 interface HolderCounts {
-  solana:   number,
-  ethereum: number,
-  bsc:      number,
-  polygon:  number,
-  kusama:   number,
+  solana:     number,
+  ethereum:   number,
+  bsc:        number,
+  polygon:    number,
+  kusama:     number,
+  avalanche:  number
 };
 
 export class HoldersData {
@@ -12,6 +13,7 @@ export class HoldersData {
   public polygon:       string;
   public solana:        string;
   public kusama:        string;
+  public avalanche:     string;
   public totalHodlers:  string; 
 
   constructor(holderCounts: HolderCounts) {

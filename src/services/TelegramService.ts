@@ -7,7 +7,7 @@ export class TelegramService {
                          
   static async getMemberCount(): Promise<ServiceResponse<number>> {
     try {
-      const url = `${this.baseUrl}/getChatMemberCount?chat_id=@millionjacuzzibar`;
+      const url = `${this.baseUrl}/getChatMemberCount?chat_id=@MillionTokensCommunity`;
       const fetchOptns: RequestInit = {
         method: 'GET',
         headers: {
@@ -21,6 +21,9 @@ export class TelegramService {
       const isValidResponse = isRespOk && hasJson;
       
       if (!isValidResponse) {
+        const text = await resp.text();
+        console.log(text);
+        
         throw new Error('Response is not valid.');
       }
 

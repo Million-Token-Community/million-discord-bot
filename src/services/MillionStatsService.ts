@@ -42,6 +42,11 @@ export class MillionStatsService {
     ContractAddresses.KUSAMA
   );
 
+  static avalancheHoldersUrl = createCovalentUrl(
+    CovalentChainIds.AVALANCHE,
+    ContractAddresses.AVALANCHE
+  );
+
   static defaultFetchOptions: RequestInit = {
     method: 'GET',
     headers: {
@@ -81,10 +86,10 @@ export class MillionStatsService {
         axios.get(this.solanaHoldersUrl),
 
         // the rest will be from CovalentHQ
-        // axios.get(this.uniswapHoldersUrl),
         axios.get(this.bscHoldersUrl),
         axios.get(this.polygonHoldersUrl),
-        axios.get(this.kusamaHoldersUrl)
+        axios.get(this.kusamaHoldersUrl),
+        axios.get(this.avalancheHoldersUrl)
       ]);
 
       const ethereumHolders = this.getHoldersFromEthplorerJson(ethplorerJsonBody.data);
@@ -93,7 +98,8 @@ export class MillionStatsService {
       const [
         bscHolders,
         polygonHolders,
-        kusamaHolders
+        kusamaHolders,
+        avalancheHolders
       ] = this.getHoldersFromCovalentJson(covalentJsonBodies);
         
       const holdersData = new HoldersData({
@@ -101,7 +107,8 @@ export class MillionStatsService {
         solana: solanaHolders,
         bsc: bscHolders,
         polygon: polygonHolders,
-        kusama: kusamaHolders
+        kusama: kusamaHolders,
+        avalanche: avalancheHolders
       });
 
       // cache holders data for 11 minutes

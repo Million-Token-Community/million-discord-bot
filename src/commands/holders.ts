@@ -51,6 +51,11 @@ module.exports = class HelloCommand extends SlashCommand {
               data.solana,
               false
             )
+            .addField(
+              'Avalanche',
+              data.avalanche,
+              false
+            )
             .setFooter('Holder data providers:\nCovalentHQ.com\nEthplorer.io\nSolscan.io');
           
         return await ctx.send({embeds: [exampleEmbed], ephemeral: true});

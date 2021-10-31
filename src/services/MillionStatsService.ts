@@ -20,7 +20,7 @@ import axios, { AxiosResponse } from 'axios';
 
 export class MillionStatsService {
   static ethplorerUrl = `https://api.ethplorer.io/getTokenInfo/0x6b4c7a5e3f0b99fcd83e9c089bddd6c7fce5c611?apiKey=freekey`;
-  static solanaHoldersUrl = `https://api.solscan.io/token/holders?token=${ContractAddresses.SOLANA}&offset=0&size=999999`;
+  static solanaHoldersUrl = `https://api.solscan.io/token/holders?token=${ContractAddresses.SOLANA}&offset=0&size=1`;
   
   static uniswapHoldersUrl = createCovalentUrl(
     CovalentChainIds.ETHEREUM_MAINNET, 
@@ -235,26 +235,13 @@ export class MillionStatsService {
    * @param json 
    */
   static getHoldersFromSolscanJson(json: SolscanJsonBody): number {
-    const owners = json.data.result;
-    let count = 0;
+    const holders = json.data?.total;
 
-    if (typeof owners === 'undefined') {
-      throw new Error('Invalid results from Solscan');
+    if (!isFinite(holders)) {
+      throw new Error('Solscan total holders should be a number');
     }
-
-    for (const owner of owners) {
-      const mmAmount = owner?.uiAmount;
-
-      if (!isFinite(mmAmount)) {
-        throw new Error('mmAmount should be a number')
-      }
-
-      if (mmAmount > 0) {
-        count +=1;
-      }
-    }
-
-    return count;
+  
+    return holders;
   }
 
   // get holders from ethplorer

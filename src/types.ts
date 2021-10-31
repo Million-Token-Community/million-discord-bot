@@ -18,9 +18,10 @@ export enum CovalentChainIds {
 export interface SolscanJsonBody {
   success: boolean;
   data: {
+    total: number,
     result: [
       {
-        uiAmount: number
+        amount: number
       }
     ]
   }

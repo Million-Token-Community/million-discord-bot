@@ -1,9 +1,19 @@
 import { SlashCommand, CommandContext, CommandOptionType} from 'slash-create';
 import SettingsDataService from '../services/SettingsDataService';
-import {createStatusEmbed} from '../utils';
+import {createStatusEmbed, hasAllowedRoles} from '../utils';
+import {roleIds} from '../role-IDs';
+
+const {admins, leadAdmin, leadAmbassador, leadDev} = roleIds;
 
 module.exports = class FormatStatsCommand extends SlashCommand {
   millionStatsFormat: 'million_stats_format';
+
+  allowedRoles = [      
+    admins,
+    leadAdmin,
+    leadAmbassador,
+    leadDev
+  ];
 
   constructor(creator) {
     super(creator, {
@@ -36,7 +46,19 @@ module.exports = class FormatStatsCommand extends SlashCommand {
     this.filePath = __filename;
   }
 
-  async run(ctx: CommandContext): Promise<void> {
+  async run(ctx: CommandContext) {
+    const isValidUser = hasAllowedRoles(ctx, this.allowedRoles);
+
+    if (!isValidUser) {
+      const embed = createStatusEmbed(
+        'Access Denied', 
+        'You do not have permission to use this command',
+        true
+      );
+
+      return ctx.send({embeds: [embed], ephemeral: true});
+    }
+
     const {set_format, view_format} = ctx.options;
     if (typeof set_format !== 'undefined') {
       return this.setFormat(ctx);
@@ -46,7 +68,7 @@ module.exports = class FormatStatsCommand extends SlashCommand {
       return this.viewFormat(ctx);
     }
 
-    ctx.send('Command Error', {ephemeral: true});
+    return ctx.send('Command Error', {ephemeral: true});
   }
 
   viewFormat = async (ctx: CommandContext): Promise<void> => {

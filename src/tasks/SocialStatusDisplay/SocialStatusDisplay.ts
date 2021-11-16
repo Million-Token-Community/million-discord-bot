@@ -1,5 +1,6 @@
 import {client as discordClient} from '../../discordClient';
 import {VoiceChannel} from 'discord.js';
+import SettingsDataService from '../../services/SettingsDataService';
 import {TwitterService} from '../../services/TwitterService';
 import {channelIds} from '../../channel-IDs';
 import {RedditService} from '../../services/RedditService';
@@ -9,8 +10,7 @@ import {TelegramService} from '../../services/TelegramService';
 
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;
-  twitterName = 'Twitter ';
-  rService: RedditService; 
+  statFormat = '';
 
   constructor() {
 
@@ -20,7 +20,7 @@ export class SocialStatusDisplay {
 
   async getData(): Promise<void> {
     try {
-      this.rService = await new RedditService();
+      this.statFormat = await SettingsDataService.getMillionStatsFormat();
 
       this.getTwitterCount();
       this.getRedditCount();
@@ -35,7 +35,10 @@ export class SocialStatusDisplay {
 
   async setChannelName(id: string, statName: string, value: string | number): Promise<void> {
     const channel = await discordClient.channels.fetch(id) as VoiceChannel;
-    const formattedName = `${statName} | ${value}`;
+    const formattedName = this.statFormat
+      .replace('{n}', statName)
+      .replace('{c}', value.toString());
+    
     await channel.setName(formattedName);
   }
 
@@ -45,7 +48,7 @@ export class SocialStatusDisplay {
 
       await this.setChannelName(
         channelIds.twitterStats,
-        this.twitterName,
+        'Twitter',
         followers
       );
     } catch (error) {
@@ -55,7 +58,7 @@ export class SocialStatusDisplay {
 
   async getRedditCount(): Promise<void> {
     try {
-      const subs = await this.rService.getMMSubCount();
+      const subs = await RedditService.getMMSubCount();
       await this.setChannelName(channelIds.redditStats, `Reddit`, subs);
     } catch (error) {
       console.log('Reddit subs error: ', error);

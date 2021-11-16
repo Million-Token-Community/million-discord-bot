@@ -3,7 +3,9 @@ import *  as xmlparser from 'express-xml-bodyparser';
 import {client} from '../discordClient';
 import {youtube} from './routes/youtube'
 import {rootRouter} from './routes/root';
-
+import {millionStatsRouter} from './routes/millionStats';
+import * as rateLimit from 'express-rate-limit';
+import * as helmet from 'helmet';
 
 export class ExpressApp {
   public app: express.Express;
@@ -29,13 +31,24 @@ export class ExpressApp {
   }
 
   setupMiddlewares(): void {
-    this.app.use(express.json())
-    this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(xmlparser());
+    // max 100 request per minute
+    const limiter = rateLimit({
+      windowMs: 60 * 1e3,
+      max: 100
+    })
+
+    this.app.use(
+      helmet({contentSecurityPolicy: {useDefaults: false}}),
+      express.json(),
+      limiter,
+      express.urlencoded({ extended: true }),
+      xmlparser(),
+    );
   }
 
   setupRoutes(): void {
     this.app.use('/', rootRouter);
     this.app.use('/youtube', youtube);
+    this.app.use('/million-stats', millionStatsRouter);
   }
 }

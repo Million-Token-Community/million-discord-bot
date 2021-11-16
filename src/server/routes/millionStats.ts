@@ -10,7 +10,10 @@ millionStatsRouter.get('/', async (_, res, next) => {
 
     res.status(200).json({
       holders: holderData.data, 
-      priceData: priceData.data
+      priceData: {
+        price: priceData.data.price,
+        percentChange: priceData.data.priceChange
+      }
     });
   } catch (error) {
     next(error);

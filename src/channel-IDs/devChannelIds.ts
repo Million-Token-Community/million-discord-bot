@@ -10,5 +10,6 @@ export const devChannelIds = {
   price: '876778084865568869',
   telegramCount: '876802098333909022',
   youTubePromotion: '885463886487252993',
+  facebook: '',
   botCommand_DevChannel: '885463886487252993'
 }

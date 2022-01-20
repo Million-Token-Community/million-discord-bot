@@ -7,6 +7,7 @@ import {RedditService} from '../../services/RedditService';
 import {EmailSubsService} from '../../services/EmailSubs';
 import {MillionStatsService} from '../../services/MillionStatsService';
 import {TelegramService} from '../../services/TelegramService';
+import {FacebookService} from '../../services/FacebookService';
 
 export class SocialStatusDisplay {
   timer: NodeJS.Timer;
@@ -28,6 +29,7 @@ export class SocialStatusDisplay {
       this.getHoldersCount();
       this.getPrice();
       this.getTelegramCount();
+      this.getFacebookGroupMemberCount();
     } catch (error) {
       console.log('Error fetching social status data: \n', error);
     } 
@@ -122,6 +124,16 @@ export class SocialStatusDisplay {
       );
     } catch (error) {
       console.log('Error updating Telegram Count:\n', error);
+    }
+  }
+
+  async getFacebookGroupMemberCount(): Promise<void> {
+    try {
+      const groupMemberCount = await FacebookService.getGroupMemberCount();
+
+      await this.setChannelName(channelIds.facebook, `Facebook ${groupMemberCount}`);
+    } catch (error) {
+      console.log('Facebook group member count error: ', error);   
     }
   }
 }

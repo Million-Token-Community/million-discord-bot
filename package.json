@@ -22,7 +22,7 @@
     "helmet": "^4.6.0",
     "lodash": "^4.17.21",
     "node-cache": "^5.1.2",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "slash-create": "^3.3.0",
     "snoowrap": "^1.23.0",
     "tslib": "~2.1.0"
